@@ -58,26 +58,11 @@ float pid(float sp, float pv)
 	float err;
 	float Kp, Kd, Ki;
 	float pid;
-	/*
-	   Kp = 18.726716284874860;
-	   Kd = 0;
-	   Ki = 2012.425445899280;
-	   */
-	/*
-	   Kp = 187.26716284874860;
-	   Kd = 500;
-	   Ki = 2012.425445899280;
-	   */
 	Kp = 387.26716284874860;
 	Kd = 500;
 	Ki = 2012.425445899280;
 	err_old = err;
 	err = sp - pv;
-
-	/*if(err < 2 && err > -2)
-	  {
-	  err = 0;
-	  }*/
 
 	P_err = err;
 	I_err = I_err + err_old;
@@ -134,11 +119,7 @@ void move(void *arg)
 		puts("Failure of configuring interrupt.");
 	}
 
-	//rt_printf("Periodo: %d\n", dutyns);
-	//while(getchar() != 10 );
-	//printf("listo el enter");
-	//dutyns = 142500;
-	while(/*sig_counter < SIZE*/!done)
+	while(!done)
 	{
 		data ^= ( 1 << bit );
 		reg.value = data;
@@ -174,7 +155,6 @@ int main(int argc, char* argv[])
 	 */
 	signal(SIGTERM, catch_signal);
 	signal(SIGINT, catch_signal);
-	//rt_print_auto_init(1);
 
 	/*
 	 * Ixpio
@@ -249,11 +229,7 @@ int main(int argc, char* argv[])
 	rt_task_join(&MoveMotor);
 	rt_task_delete(&demo_task);
 	rt_task_delete(&MoveMotor);
-	/*int w = 0;
-	  for(w = 0; w < SIZE; w++)
-	  {
-	  printf("Tiempo: %4.10f Velocidad: %4.10f PID: %4.5f\n",datos[w][1],datos[w][2],datos[w][3]);
-	  }*/
+
 	/*
 	 * Ixpio
 	 */
