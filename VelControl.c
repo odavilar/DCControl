@@ -17,7 +17,6 @@
 
 #define SIZE 30000
 
-//int periodo = 600000;
 int periodo = 285000;
 RT_TASK demo_task;
 RT_TASK MoveMotor;
@@ -44,9 +43,6 @@ void sig_handler(int sig)
 		}
 		printf("Tiempo: %4.10f Velocidad: %4.10f PID: %4.5f\n",((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0, vel, pid_val);
 	}
-	//datos[sig_counter][1] = ((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0;
-	//datos[sig_counter][2] = vel;
-	//datos[sig_counter][3] = pid_val;
 	told = tnew;
 }
 
@@ -106,10 +102,20 @@ float pid(float sp, float pv)
 
 void demo(void *arg)
 {
-	rt_task_set_periodic(NULL, TM_NOW, 1000000000);
+	rt_task_set_periodic(NULL, TM_NOW, 1000000);
 	int cont = 0;
-	for(cont = 0; cont < 3; cont++){
-	rt_task_wait_period(NULL);
+	int cont2 = 0;
+	for(cont2 = 2; cont2 < 3; cont2++)
+	{
+		for(cont = 0; cont < 1000; cont++){
+			float dis = sig_counter * 2 * 2 / 4096.0 / 7.0;
+			if(dis >= 3)
+			{
+				done = TRUE;
+				break;
+			}
+			rt_task_wait_period(NULL);
+		}
 	}
 	done = TRUE;
 }
