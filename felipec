@@ -1,1 +1,0 @@
--L/usr/xenomai/lib -lnative -Wl,-rpath,/usr/xenomai/lib -Wl,--enable-new-dtags
