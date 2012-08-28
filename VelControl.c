@@ -32,18 +32,22 @@ int duty_to_ns(float duty);
 float pid(float sp, float pv);
 
 void sig_handler(int sig)
-{	double pid_val;
+{	/*
+	   double pid_val;
+	   */
 	++sig_counter;
-	clock_gettime(CLOCK_REALTIME,&tnew);
-	if(tnew.tv_nsec > told.tv_nsec){
-		vel = 0.000139509/(((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0);
-		//if(vel > 0 && vel < (3 * 1.1)){
-		pid_val = pid(1,vel);
-		dutyns = duty_to_ns(pid_val);
-		//}
-		printf("Tiempo: %4.10f Velocidad: %4.10f PID: %4.5f\n",((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0, vel, pid_val);
+	/*
+	 * clock_gettime(CLOCK_REALTIME,&tnew);
+
+	 if(tnew.tv_nsec > told.tv_nsec){
+	 vel = 0.000139509/(((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0);
+	//if(vel > 0 && vel < (3 * 1.1)){
+	pid_val = pid(1,vel);
+	dutyns = duty_to_ns(pid_val);
+	//}
+	printf("Tiempo: %4.10f Velocidad: %4.10f PID: %4.5f\n",((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0, vel, pid_val);
 	}
-	told = tnew;
+	told = tnew;*/
 }
 
 int duty_to_ns(float duty)
@@ -66,10 +70,10 @@ float pid(float sp, float pv)
 
 	P_err = err;
 	I_err = I_err + err_old;
-	if ( I_err > 9000000000000000000) //Improvements
+/*	if ( I_err > 9000000000000000000) //Improvements
 	{
 		I_err = 0;
-	}
+	}*/
 	D_err = err - err_old;
 	//printf(" %f %f %f",P_err, I_err, D_err);
 
@@ -88,9 +92,16 @@ float pid(float sp, float pv)
 
 void demo(void *arg)
 {
+	static float dis_old;
+	static float dis_new;
 	rt_task_set_periodic(NULL, TM_NOW, 1000000);
 	while(!done){
+		dis_old = dis_new;
 		float dis = sig_counter * 2 * 2 / 4096.0 / 7.0;
+		dis_new = dis;
+	   vel = ( dis_new - dis_old ) * 1000;
+		printf("Velocidad: %4.10f ", vel);
+
 		if(dis >= 1 )
 		{
 			done = TRUE;
