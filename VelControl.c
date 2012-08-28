@@ -62,9 +62,10 @@ float pid(float sp, float pv)
 	static float err;
 	float Kp, Kd, Ki;
 	float pid;
-	Kp = 47332.71230575755;
-	Kd = 7.418254666762480;
-	Ki = 8600825.044727309;
+	Kp = 153743.2362655691;
+	Kd = 22.181268156919350;
+	Ki = 30347549.92739094;
+
 	err_old = err;
 	err = sp - pv;
 
@@ -94,13 +95,16 @@ void demo(void *arg)
 {
 	static float dis_old;
 	static float dis_new;
+	float pid_val;
 	rt_task_set_periodic(NULL, TM_NOW, 15000000);
 	dis_old = 0;
 	dis_new = 0;
 	while(!done){
 		dis_old = dis_new;
 		dis_new = sig_counter * 2 * 2 / 4096.0 / 7.0;
-		vel = (dis_new - dis_old) * 40;
+		vel = (dis_new - dis_old) * 1000.0 / 15.0;
+		pid_val = pid(1,vel);
+		dutyns = duty_to_ns(pid_val);
 		printf("Velocidad: %f \n ", vel);
 
 		if(dis_new >= 4 )
