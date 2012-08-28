@@ -64,8 +64,8 @@ float pid(float sp, float pv)
 	float pid;
 
 	Kp = 40.805378005201;
-	/*Kd = 22.181268156919350;
-	Ki = 30347549.92739094;*/
+	/*Kd = 22.181268156919350;*/
+	Ki = 2884.888861338944;
 
 	err_old = err;
 	err = sp - pv;
@@ -79,7 +79,7 @@ float pid(float sp, float pv)
 	D_err = err - err_old;
 	//printf(" %f %f %f",P_err, I_err, D_err);
 
-	pid = (Kp * P_err) /*+ (Kd * D_err) + (Ki * I_err)*/;
+	pid = (Kp * P_err) /*+ (Kd * D_err)*/ + (Ki * I_err);
 	if ( pid > 100 )
 	{
 		pid = 100;
@@ -104,7 +104,7 @@ void demo(void *arg)
 		dis_old = dis_new;
 		dis_new = sig_counter * 2 * 2 / 4096.0 / 7.0;
 		vel = (dis_new - dis_old) * 1000.0 / 15.0;
-		pid_val = pid(0.5,vel);
+		pid_val = pid(1,vel);
 		dutyns = duty_to_ns(pid_val);
 		printf("Velocidad: %f \n ", vel);
 
