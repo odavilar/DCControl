@@ -59,7 +59,7 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 	Kp = 47332.71230575755;
-	Kd = 2507.418254666762480;
+	Kd = 7.418254666762480;
 	Ki = 8600825.044727309;
 	err_old = err;
 	err = sp - pv;
@@ -71,7 +71,7 @@ float pid(float sp, float pv)
 		I_err = 0;
 	}
 	D_err = err - err_old;
-	printf(" %f %f %f",P_err, I_err, D_err);
+	//printf(" %f %f %f",P_err, I_err, D_err);
 
 	pid = (Kp * P_err) + (Kd * D_err) + (Ki * I_err);
 	if ( pid > 100 )
