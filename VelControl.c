@@ -63,7 +63,7 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-	Kp = 104.805378005201;
+	Kp = 40.805378005201;
 	/*Kd = 22.181268156919350;
 	Ki = 30347549.92739094;*/
 
@@ -104,7 +104,7 @@ void demo(void *arg)
 		dis_old = dis_new;
 		dis_new = sig_counter * 2 * 2 / 4096.0 / 7.0;
 		vel = (dis_new - dis_old) * 1000.0 / 15.0;
-		pid_val = pid(1,vel);
+		pid_val = pid(0.5,vel);
 		dutyns = duty_to_ns(pid_val);
 		printf("Velocidad: %f \n ", vel);
 
