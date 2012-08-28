@@ -59,14 +59,14 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 	Kp = 47332.71230575755;
-	Kd = 7.418254666762480;
+	Kd = 5507.418254666762480;
 	Ki = 8600825.044727309;
 	err_old = err;
 	err = sp - pv;
 
 	P_err = err;
 	I_err = I_err + err_old;
-	if ( I_err > 10000)
+	if ( I_err > 100000000)
 	{
 		I_err = 0;
 	}
@@ -79,7 +79,7 @@ float pid(float sp, float pv)
 	}
 	if ( pid < 1)
 	{
-		pid = 1;
+		pid = 0.001;
 	}
 
 	return pid;
