@@ -27,27 +27,13 @@ float val[SIZE];
 RTIME dutyns = 142500;
 static struct timespec told, tnew;
 double vel;
-double datos[SIZE][3];
+double datos[SIZE];
 int duty_to_ns(float duty);
 float pid(float sp, float pv);
 
 void sig_handler(int sig)
-{	/*
-	   double pid_val;
-	   */
+{
 	++sig_counter;
-	/*
-	 * clock_gettime(CLOCK_REALTIME,&tnew);
-
-	 if(tnew.tv_nsec > told.tv_nsec){
-	 vel = 0.000139509/(((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0);
-	//if(vel > 0 && vel < (3 * 1.1)){
-	pid_val = pid(1,vel);
-	dutyns = duty_to_ns(pid_val);
-	//}
-	printf("Tiempo: %4.10f Velocidad: %4.10f PID: %4.5f\n",((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0, vel, pid_val);
-	}
-	told = tnew;*/
 }
 
 int duty_to_ns(float duty)
@@ -63,9 +49,9 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-	Kp = 80;
-	/*Kd = 22.181268156919350;*/
-	Ki = 5000;
+	Kp = 13.198342214328004;
+	Kd = 0.016719000000000;
+	Ki = 2604.764597262286;
 
 	err_old = err;
 	err = sp - pv;
@@ -77,9 +63,8 @@ float pid(float sp, float pv)
 		I_err = 0;
 	}*/
 	D_err = err - err_old;
-	//printf(" %f %f %f",P_err, I_err, D_err);
 
-	pid = (Kp * P_err) /*+ (Kd * D_err)*/ + (Ki * I_err);
+	pid = (Kp * P_err) + (Kd * D_err) + (Ki * I_err);
 	if ( pid > 100 )
 	{
 		pid = 100;
