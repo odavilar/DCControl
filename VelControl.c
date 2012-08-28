@@ -66,7 +66,7 @@ float pid(float sp, float pv)
 
 	P_err = err;
 	I_err = I_err + err_old;
-	if ( I_err > 100000000000)
+	if ( I_err > 100000000000) //Improvements
 	{
 		I_err = 0;
 	}
