@@ -58,9 +58,9 @@ float pid(float sp, float pv)
 	float err;
 	float Kp, Kd, Ki;
 	float pid;
-	Kp = 387.26716284874860;
-	Kd = 500;
-	Ki = 2012.425445899280;
+	Kp = 47332.71230575755;
+	Kd = 7.418254666762480;
+	Ki = 8600825.044727309;
 	err_old = err;
 	err = sp - pv;
 
