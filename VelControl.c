@@ -63,9 +63,9 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-	Kp = 40.805378005201;
+	Kp = 80;
 	/*Kd = 22.181268156919350;*/
-	Ki = 2884.888861338944;
+	Ki = 5000;
 
 	err_old = err;
 	err = sp - pv;
