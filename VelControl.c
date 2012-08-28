@@ -66,10 +66,10 @@ float pid(float sp, float pv)
 
 	P_err = err;
 	I_err = I_err + err_old;
-	if ( I_err > 100)
+/*	if ( I_err > 100)
 	{
 		I_err = 0;
-	}
+	}*/
 	D_err = err - err_old;
 
 	pid = (Kp * P_err) + (Kd * D_err) + (Ki * I_err);
