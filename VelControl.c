@@ -37,10 +37,10 @@ void sig_handler(int sig)
 	clock_gettime(CLOCK_REALTIME,&tnew);
 	if(tnew.tv_nsec > told.tv_nsec){
 		vel = 0.000139509/(((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0);
-		if(vel > 0 && vel < (3 * 1.1)){
-			pid_val = pid(0.3,vel);
-			dutyns = duty_to_ns(pid_val);
-		}
+		//if(vel > 0 && vel < (3 * 1.1)){
+		pid_val = pid(1,vel);
+		dutyns = duty_to_ns(pid_val);
+		//}
 		printf("Tiempo: %4.10f Velocidad: %4.10f PID: %4.5f\n",((float)(tnew.tv_nsec - told.tv_nsec))/1000000000.0, vel, pid_val);
 	}
 	told = tnew;
@@ -88,21 +88,14 @@ float pid(float sp, float pv)
 void demo(void *arg)
 {
 	rt_task_set_periodic(NULL, TM_NOW, 1000000);
-	int cont = 0;
-	int cont2 = 0;
-	for(cont2 = 2; cont2 < 3; cont2++)
-	{
-		for(cont = 0; cont < 1000; cont++){
-			float dis = sig_counter * 2 * 2 / 4096.0 / 7.0;
-			if(dis >= 3)
-			{
-				done = TRUE;
-				break;
-			}
-			rt_task_wait_period(NULL);
+	while(!done){
+		float dis = sig_counter * 2 * 2 / 4096.0 / 7.0;
+		if(dis >= 1 )
+		{
+			done = TRUE;
 		}
+		rt_task_wait_period(NULL);
 	}
-	done = TRUE;
 }
 
 void move(void *arg)
