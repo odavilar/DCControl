@@ -94,15 +94,16 @@ void demo(void *arg)
 {
 	static float dis_old;
 	static float dis_new;
-	rt_task_set_periodic(NULL, TM_NOW, 1000000);
+	rt_task_set_periodic(NULL, TM_NOW, 100000000);
+	dis_old = 0;
+	dis_new = 0;
 	while(!done){
 		dis_old = dis_new;
-		float dis = sig_counter * 2 * 2 / 4096.0 / 7.0;
-		dis_new = dis;
-	   vel = ( dis_new - dis_old ) * 1000;
-		printf("Velocidad: %4.10f ", vel);
+		dis_new = sig_counter * 2 * 2 / 4096.0 / 7.0;
+		vel = (dis_new - dis_old) * 10;
+		printf("Velocidad: %d \n ", vel);
 
-		if(dis >= 1 )
+		if(dis_new >= 4 )
 		{
 			done = TRUE;
 		}
