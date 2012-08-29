@@ -24,7 +24,7 @@ static unsigned sig_counter;
 int done = FALSE;
 int fd;
 float val[SIZE];
-RTIME dutyns = 500000;
+RTIME dutyns = 990000;
 //RTIME dutyns = 142500;
 static struct timespec told, tnew;
 double vel;
@@ -92,6 +92,7 @@ void demo(void *arg)
 	};
 	static float dis_old;
 	static float dis_new;
+	int z;
 	float pid_val;
 	rt_task_set_periodic(NULL, TM_NOW, 500000);
 	dis_old = 0;
@@ -117,7 +118,27 @@ void demo(void *arg)
 		{
 			done = TRUE;
 		}
-		rt_task_wait_period(NULL);
+		z = rt_task_wait_period(NULL);
+		if ( z != 0 )
+		{
+			switch(z)
+			{
+				case -ETIMEDOUT:
+					printf("\nVETIMEOUT\n");
+					break;
+				case -EINTR:
+					printf("\nVEINTR\n");
+					break;
+				case -EPERM:
+					printf("\nVEPERM\n");
+					break;
+				case -EWOULDBLOCK:
+					printf("\nVEWOULDBLOCK\n");
+					break;
+				default:
+					break;
+			}
+		}
 	}
 }
 
@@ -144,7 +165,7 @@ void move(void *arg)
 			close(fd);
 			puts("Failure of configuring interrupt.");
 		}
-		f = rt_task_sleep(rt_timer_ns2ticks(dutyns));
+		f = rt_task_sleep(/*rt_timer_ns2ticks(*/dutyns/*)*/);
 		if ( f != 0 )
 		{
 			printf("\nsleep ERROR\n %d", f);
