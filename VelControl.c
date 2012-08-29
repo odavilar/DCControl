@@ -64,7 +64,7 @@ float pid(float sp, float pv)
 		I_err = 0;
 		}*/
 	D_err = err - err_old;
-
+	printf("P_err: %f I_err: %f D_err: %f", P_err, I_err, D_err);
 	pid = (Kp * P_err) + (Kd * D_err) + (Ki * I_err);
 	if ( pid > 100 )
 	{
