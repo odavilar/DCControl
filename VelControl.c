@@ -24,7 +24,8 @@ static unsigned sig_counter;
 int done = FALSE;
 int fd;
 float val[SIZE];
-RTIME dutyns = 142500;
+RTIME dutyns = 14500;
+//RTIME dutyns = 142500;
 static struct timespec told, tnew;
 double vel;
 double datos[SIZE];
@@ -58,10 +59,10 @@ float pid(float sp, float pv)
 
 	P_err = err;
 	I_err = I_err + err_old;
-/*	if ( I_err > 9000000000000000000) //Improvements
-	{
+	/*	if ( I_err > 9000000000000000000) //Improvements
+		{
 		I_err = 0;
-	}*/
+		}*/
 	D_err = err - err_old;
 
 	pid = (Kp * P_err) + (Kd * D_err) + (Ki * I_err);
@@ -79,7 +80,11 @@ float pid(float sp, float pv)
 
 void demo(void *arg)
 {
-	static unsigned datosvel[30];
+	int i = 0;
+	static unsigned datosvel[150] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+	};
 	static float dis_old;
 	static float dis_new;
 	float pid_val;
@@ -87,17 +92,23 @@ void demo(void *arg)
 	dis_old = 0;
 	dis_new = 0;
 	while(!done){
+
+		for(i=149;i>0;i--)
+		{
+			datosvel[i]=datosvel[i-1];
+		}
+		datosvel[0] = sig_counter;
 		/*
 		 * Guardar y empujar
 		 */
 		dis_new = datosvel[0] * 2 * 2 / 4096.0 / 7.0;
-		dis_old = datosvel[29] * 2 * 2 / 4096.0 / 7.0;
+		dis_old = datosvel[149] * 2 * 2 / 4096.0 / 7.0;
 		vel = (dis_new - dis_old) * 1000.0 / 15.0;
 		pid_val = pid(1,vel);
 		dutyns = duty_to_ns(pid_val);
-		printf("Velocidad: %f \n ", vel);
+		printf("Velocidad: %f  dis_new: %f \n", vel, dis_new);
 
-		if(dis_new >= 4 )
+		if(dis_new >= 1)
 		{
 			done = TRUE;
 		}
