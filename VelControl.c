@@ -25,6 +25,7 @@ int done = FALSE;
 int fd;
 float val[SIZE];
 //RTIME dutyns = 142500;
+RTIME dutyns = 10000;
 static struct timespec told, tnew;
 double vel;
 double datos[SIZE];
@@ -68,7 +69,7 @@ float pid(float sp, float pv)
 		I_err = 0;
 	}
 	D_err = err - err_old;
-	printf("P_err: %f I_err: %f D_err: %f ", P_err, I_err, D_err);
+	//printf("P_err: %f I_err: %f D_err: %f ", P_err, I_err, D_err);
 	pid = (Kp * P_err) + (Kd * D_err) + (Ki * I_err);
 	if ( pid > 100 )
 	{
@@ -109,7 +110,7 @@ void demo(void *arg)
 		dis_new = datosvel[0] * 2 * 2 / 4096.0 / 7.0;
 		dis_old = datosvel[149] * 2 * 2 / 4096.0 / 7.0;
 		vel = (dis_new - dis_old) * 1000.0 / 15.0;
-//		pid_val = pid(1,vel);
+//		pid_val = pid(7,vel);
 //		dutyns = duty_to_ns(pid_val);
 		printf("Velocidad: %f  dis_new: %f \n", vel, dis_new);
 
@@ -148,8 +149,6 @@ void move(void *arg)
 	unsigned short int data = 0;
 	int bit = 0;
 	int f, z;
-	unsigned long dutyns1 = 100000;
-	printf("\nlero %lu %lu \n",rt_timer_read(),dutyns1);
 	rt_task_set_periodic(NULL, TM_NOW, periodo);
 	reg.id = IXPIO_P3;
 	reg.value = data;
@@ -166,9 +165,7 @@ void move(void *arg)
 			close(fd);
 			puts("Failure of configuring interrupt.");
 		}
-		printf("\n1prueba %lu %lu \n",rt_timer_read(),dutyns1);
-		f = rt_task_sleep(rt_timer_ns2ticks(dutyns1));
-		printf("\n2prueba %lu %lu \n",rt_timer_read(),dutyns1);
+		f = rt_task_sleep(dutyns);
 		if ( f != 0 )
 		{
 			printf("\nsleep ERROR\n %d", f);
@@ -229,13 +226,14 @@ int main(int argc, char* argv[])
 	ixpio_reg_t reg,reg1;
 	ixpio_signal_t sig;
 	static struct sigaction act, act_old;
+	printf("a %lu",dutyns);
 
 	dev_file = "/dev/ixpio1";
 
 	/* Abrir fd de la tarjeta */
 	fd = open(dev_file, O_RDWR);
 	if (fd < 0) {
-		printf("Failure of open device file \"%s.\"\n", dev_file);
+		//printf("Failure of open device file \"%s.\"\n", dev_file);
 		return FAILURE;
 	}
 
@@ -286,12 +284,12 @@ int main(int argc, char* argv[])
 	 * Xenomai
 	 */
 	mlockall(MCL_CURRENT|MCL_FUTURE);
-	rt_task_create(&demo_task, "trivial", 0, 90, T_JOINABLE | T_FPU );
-	rt_task_create(&MoveMotor, "mmotor", 0, 99, T_JOINABLE | T_FPU );
+	rt_task_create(&demo_task, "trivial", 0, 90, T_JOINABLE );
+	rt_task_create(&MoveMotor, "mmotor", 0, 99, T_JOINABLE );
 	rt_task_start(&demo_task, &demo, NULL);
 	rt_task_start(&MoveMotor, &move, NULL);
 	rt_task_join(&demo_task);
-	rt_task_join(&MoveMotor);
+//	rt_task_join(&MoveMotor);
 	rt_task_delete(&demo_task);
 	rt_task_delete(&MoveMotor);
 
@@ -300,6 +298,6 @@ int main(int argc, char* argv[])
 	 */
 	sigaction(MY_SIG, &act_old, NULL);
 	close(fd);
-	printf("%u",sig_counter);
+	//printf("%u",sig_counter);
 	return 0;
 }
