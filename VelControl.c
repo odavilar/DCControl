@@ -17,14 +17,14 @@
 
 #define SIZE 30000
 
-int periodo = 285000;
+int periodo = 1000000;
 RT_TASK demo_task;
 RT_TASK MoveMotor;
 static unsigned sig_counter;
 int done = FALSE;
 int fd;
 float val[SIZE];
-RTIME dutyns = 285000;
+RTIME dutyns = 500000;
 //RTIME dutyns = 142500;
 static struct timespec told, tnew;
 double vel;
@@ -262,7 +262,7 @@ int main(int argc, char* argv[])
 	 * Xenomai
 	 */
 	mlockall(MCL_CURRENT|MCL_FUTURE);
-	rt_task_create(&demo_task, "trivial", 0, 99, T_JOINABLE | T_FPU );
+	rt_task_create(&demo_task, "trivial", 0, 90, T_JOINABLE | T_FPU );
 	rt_task_create(&MoveMotor, "mmotor", 0, 99, T_JOINABLE | T_FPU );
 	rt_task_start(&demo_task, &demo, NULL);
 	rt_task_start(&MoveMotor, &move, NULL);
