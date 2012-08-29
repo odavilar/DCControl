@@ -24,7 +24,7 @@ static unsigned sig_counter;
 int done = FALSE;
 int fd;
 float val[SIZE];
-RTIME dutyns = 14500;
+RTIME dutyns = 285000;
 //RTIME dutyns = 142500;
 static struct timespec told, tnew;
 double vel;
@@ -50,9 +50,14 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-	Kp = 13.198342214328004;
-	Kd = 0.016719000000000;
-	Ki = 2604.764597262286;
+	/*
+	 * Kp = 13.198342214328004;
+	 * Kd = 0.016719000000000;
+	 * Ki = 2604.764597262286;
+	 */
+	 Kp = 13.198342214328004;
+	 Kd = 0.016719000000000;
+	 Ki = 2604.764597262286;
 
 	err_old = err;
 	err = sp - pv;
@@ -104,8 +109,8 @@ void demo(void *arg)
 		dis_new = datosvel[0] * 2 * 2 / 4096.0 / 7.0;
 		dis_old = datosvel[149] * 2 * 2 / 4096.0 / 7.0;
 		vel = (dis_new - dis_old) * 1000.0 / 15.0;
-		pid_val = pid(2,vel);
-		dutyns = duty_to_ns(pid_val);
+//		pid_val = pid(1,vel);
+//		dutyns = duty_to_ns(pid_val);
 		printf("Velocidad: %f  dis_new: %f \n", vel, dis_new);
 
 		if(dis_new >= 1)
@@ -122,6 +127,7 @@ void move(void *arg)
 	ixpio_reg_t reg;
 	unsigned short int data = 0;
 	int bit = 0;
+	int f, z;
 	rt_task_set_periodic(NULL, TM_NOW, periodo);
 	reg.id = IXPIO_P3;
 	reg.value = data;
@@ -138,14 +144,38 @@ void move(void *arg)
 			close(fd);
 			puts("Failure of configuring interrupt.");
 		}
-		rt_task_sleep(rt_timer_ns2ticks(dutyns));
+		f = rt_task_sleep(rt_timer_ns2ticks(dutyns));
+		if ( f != 0 )
+		{
+			printf("\nsleep ERROR\n %d", f);
+		}
 		data ^= ( 1 << bit );
 		reg.value = data;
 		if (ioctl(fd, IXPIO_WRITE_REG, &reg)) {
 			close(fd);
 			puts("Failure of configuring interrupt.");
 		}
-		rt_task_wait_period(NULL);
+		z = rt_task_wait_period(NULL);
+		if ( z != 0 )
+		{
+			switch(z)
+			{
+				case -ETIMEDOUT:
+					printf("\nETIMEOUT\n");
+					break;
+				case -EINTR:
+					printf("\nEINTR\n");
+					break;
+				case -EPERM:
+					printf("\nEPERM\n");
+					break;
+				case -EWOULDBLOCK:
+					printf("\nEWOULDBLOCK\n");
+					break;
+				default:
+					break;
+			}
+		}
 	}
 	data = 0;
 	reg.value = data;
