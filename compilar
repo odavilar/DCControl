@@ -2,5 +2,5 @@
 if [ -z $1 ]; then
 	echo "Faltó el parámetro."
 else
-	gcc $1.c -I/home/odavilar/workspace/ixpio/include/ -I/lib/modules/`uname -r`/build/include/xenomai/ -I/lib/modules/`uname -r`/build/include/xenomai/posix -I/usr/xenomai/include -D_GNU_SOURCE -D_REENTRANT -D__XENO__ -lnative -L/usr/xenomai/lib -lxenomai -lpthread -lrt -o $1
+	gcc $1.c -ggdb -I/home/odavilar/workspace/ixpio/include/ -I/lib/modules/`uname -r`/build/include/xenomai/ -I/lib/modules/`uname -r`/build/include/xenomai/posix -I/usr/xenomai/include -D_GNU_SOURCE -D_REENTRANT -D__XENO__ -lnative -L/usr/xenomai/lib -lxenomai -lpthread -lrt -o $1
 fi

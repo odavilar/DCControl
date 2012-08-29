@@ -24,7 +24,6 @@ static unsigned sig_counter;
 int done = FALSE;
 int fd;
 float val[SIZE];
-RTIME dutyns = 990000;
 //RTIME dutyns = 142500;
 static struct timespec told, tnew;
 double vel;
@@ -149,6 +148,8 @@ void move(void *arg)
 	unsigned short int data = 0;
 	int bit = 0;
 	int f, z;
+	unsigned long dutyns1 = 100000;
+	printf("\nlero %lu %lu \n",rt_timer_read(),dutyns1);
 	rt_task_set_periodic(NULL, TM_NOW, periodo);
 	reg.id = IXPIO_P3;
 	reg.value = data;
@@ -165,7 +166,9 @@ void move(void *arg)
 			close(fd);
 			puts("Failure of configuring interrupt.");
 		}
-		f = rt_task_sleep(/*rt_timer_ns2ticks(*/dutyns/*)*/);
+		printf("\n1prueba %lu %lu \n",rt_timer_read(),dutyns1);
+		f = rt_task_sleep(rt_timer_ns2ticks(dutyns1));
+		printf("\n2prueba %lu %lu \n",rt_timer_read(),dutyns1);
 		if ( f != 0 )
 		{
 			printf("\nsleep ERROR\n %d", f);
