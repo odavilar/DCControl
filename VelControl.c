@@ -59,12 +59,12 @@ float pid(float sp, float pv)
 
 	P_err = err;
 	I_err = I_err + err_old;
-	/*	if ( I_err > 9000000000000000000) //Improvements
-		{
+	if ( I_err > 100 || I_err < -100)
+	{
 		I_err = 0;
-		}*/
+	}
 	D_err = err - err_old;
-	printf("P_err: %f I_err: %f D_err: %f", P_err, I_err, D_err);
+	printf("P_err: %f I_err: %f D_err: %f ", P_err, I_err, D_err);
 	pid = (Kp * P_err) + (Kd * D_err) + (Ki * I_err);
 	if ( pid > 100 )
 	{
@@ -104,7 +104,7 @@ void demo(void *arg)
 		dis_new = datosvel[0] * 2 * 2 / 4096.0 / 7.0;
 		dis_old = datosvel[149] * 2 * 2 / 4096.0 / 7.0;
 		vel = (dis_new - dis_old) * 1000.0 / 15.0;
-		pid_val = pid(1,vel);
+		pid_val = pid(2,vel);
 		dutyns = duty_to_ns(pid_val);
 		printf("Velocidad: %f  dis_new: %f \n", vel, dis_new);
 
