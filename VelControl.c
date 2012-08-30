@@ -57,12 +57,12 @@ float pid(float sp, float pv)
 	 * Ki = 2604.764597262286;
 	 */
 	/*
-	Kp = 1.3198342214328004;
-	Kd = 5000.016719000000000;
-	Ki = 260.4764597262286;
-	*/
-	Kp = 1;
-	Kd = 1;
+	   Kp = 1.3198342214328004;
+	   Kd = 5000.016719000000000;
+	   Ki = 260.4764597262286;
+	   */
+	Kp = 200;
+	Kd = 0.000001;
 	Ki = 15047.605397115176;
 
 	err_old = err;
@@ -92,19 +92,17 @@ float pid(float sp, float pv)
 void demo(void *arg)
 {
 	int i = 0;
-	static unsigned datosvel[150] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	};
+	static unsigned datosvel[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	static float dis_old;
 	static float dis_new;
+	int cont3 = 0;
 	int z;
 	rt_task_set_periodic(NULL, TM_NOW, 100000);
 	dis_old = 0;
 	dis_new = 0;
 	while(!done){
 
-		for(i=149;i>0;i--)
+		for(i=25;i>0;i--)
 		{
 			datosvel[i]=datosvel[i-1];
 		}
@@ -113,8 +111,15 @@ void demo(void *arg)
 		 * Guardar y empujar
 		 */
 		dis_new = datosvel[0] * 0.000139509;
-		dis_old = datosvel[149] * 0.000139509;
-		vel = (dis_new - dis_old) * 1000.0 / 15.0;
+		dis_old = datosvel[25] * 0.000139509;
+		vel = (dis_new - dis_old) * 1000.0 / 2.5;
+		if(cont3 > 24 )
+		{
+			pid_val = pid(1.0,vel);
+			cont3 = 0;
+		}
+		cont3++;
+		dutyns = duty_to_ns(pid_val);
 		printf("Velocidad: %f  dis_new: %f pid_val: %f duty: %f \n", vel, dis_new,pid_val,dutyns);
 
 		if(dis_new >= 2)
@@ -162,8 +167,6 @@ void move(void *arg)
 
 	while(!done)
 	{
-		pid_val = pid(1.0,vel);
-		dutyns = duty_to_ns(pid_val);
 		data ^= ( 1 << bit );
 		reg.value = data;
 		if (ioctl(fd, IXPIO_WRITE_REG, &reg)) {
