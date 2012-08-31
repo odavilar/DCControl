@@ -51,6 +51,7 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 	sp = sp + 0.1105;
+	//sp = sp + 0.2;
 	/*
 	 * Kp = 13.198342214328004;
 	 * Kd = 0.016719000000000;
@@ -96,6 +97,7 @@ void demo(void *arg)
 	static float dis_old;
 	static float dis_new;
 	int cont3 = 0;
+	int cont4 = 0;
 	int z;
 	rt_task_set_periodic(NULL, TM_NOW, 100000);
 	dis_old = 0;
@@ -115,14 +117,45 @@ void demo(void *arg)
 		vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont3 > 9 )
 		{
-			pid_val = pid(1,vel);
+			if(cont4 <= 999)
+			{
+				pid_val = pid(0.3,vel);
+			}else if(cont4 > 999 && cont4 < 1999)
+			{
+				pid_val = pid(0.5,vel);
+			}else if(cont4 > 1999 && cont4 < 2999)
+			{
+				pid_val = pid(0.7,vel);
+			}else if(cont4 > 2999 && cont4 < 3999)
+			{
+				pid_val = pid(0.9,vel);
+			}else if(cont4 > 3999 && cont4 < 4999)
+			{
+				pid_val = pid(1.1,vel);
+			}else if(cont4 > 4999 && cont4 < 5999)
+			{
+				pid_val = pid(1.3,vel);
+			}else if(cont4 > 5999 && cont4 < 6999)
+			{
+				pid_val = pid(1.5,vel);
+			}else if(cont4 > 6999 && cont4 < 7999)
+			{
+				pid_val = pid(1.7,vel);
+			}else if(cont4 > 7999 && cont4 < 8999)
+			{
+				pid_val = pid(1.9,vel);
+			}else
+			{
+				pid_val = pid(2.1,vel);
+			}
+			cont4++;
 			cont3 = 0;
 		}
 		cont3++;
 		dutyns = duty_to_ns(pid_val);
-		printf("Velocidad: %f  dis_new: %f pid_val: %f duty: %f \n", vel, dis_new,pid_val,dutyns);
+		//printf("Velocidad: %f  dis_new: %f pid_val: %f duty: %f \n", vel, dis_new,pid_val,dutyns);
 
-		if(dis_new >= 2)
+		if(dis_new >= 13)
 		{
 			done = TRUE;
 		}
