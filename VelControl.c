@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
 #include <sys/mman.h>
@@ -23,13 +24,15 @@ RT_TASK MoveMotor;
 static unsigned sig_counter;
 int done = FALSE;
 int fd;
-float val[SIZE];
+static float set = 1;
+static float dista = 3;
+//float val[SIZE];
 float pid_val;
 RTIME dutyns = 500000;
 //RTIME dutyns = 999999;
 static struct timespec told, tnew;
 double vel;
-double datos[SIZE];
+//double datos[SIZE];
 int duty_to_ns(float duty);
 float pid(float sp, float pv);
 
@@ -50,18 +53,17 @@ float pid(float sp, float pv)
 	static float err;
 	float Kp, Kd, Ki;
 	float pid;
-	sp = sp + 0.1105;
-	//sp = sp + 0.2;
-	/*
-	 * Kp = 13.198342214328004;
-	 * Kd = 0.016719000000000;
-	 * Ki = 2604.764597262286;
-	 */
-	/*
-	   Kp = 1.3198342214328004;
-	   Kd = 5000.016719000000000;
-	   Ki = 260.4764597262286;
-	   */
+
+	if(sp<=.5){
+
+		sp = - 52.984 * (sp*sp*sp*sp*sp) - 407.74 * (sp*sp*sp*sp) + 835.42 * (sp*sp*sp) - 570.08 * (sp*sp) + 166.49 * sp - 17.565;
+
+	}else if(sp>.5 && sp<=1.65){
+		sp = -1.6172 * (sp*sp*sp*sp*sp*sp) + 12.723 * (sp*sp*sp*sp*sp) - 40.424 * (sp*sp*sp*sp) + 66.449 * (sp*sp*sp) - 59.489 * (sp*sp) + 28.653 * sp - 5.1674;
+	}else{
+
+		sp =  1.4898 * (sp*sp*sp*sp) - 11.638 * (sp*sp*sp) + 32.881 * (sp*sp) - 38.84 * sp + 17.792;
+	}
 	Kp = 200;
 	Kd = 0.000001;
 	Ki = 15047.605397115176;
@@ -117,37 +119,40 @@ void demo(void *arg)
 		vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont3 > 9 )
 		{
+						pid_val = pid(set,vel);
+/*
 			if(cont4 <= 999)
 			{
-				pid_val = pid(0.3,vel);
+				pid_val = pid(0.10,vel);
 			}else if(cont4 > 999 && cont4 < 1999)
 			{
-				pid_val = pid(0.5,vel);
+				pid_val = pid(0.20,vel);
 			}else if(cont4 > 1999 && cont4 < 2999)
 			{
-				pid_val = pid(0.7,vel);
+				pid_val = pid(0.30,vel);
 			}else if(cont4 > 2999 && cont4 < 3999)
 			{
-				pid_val = pid(0.9,vel);
+				pid_val = pid(0.40,vel);
 			}else if(cont4 > 3999 && cont4 < 4999)
 			{
-				pid_val = pid(1.1,vel);
+				pid_val = pid(0.50,vel);
 			}else if(cont4 > 4999 && cont4 < 5999)
 			{
-				pid_val = pid(1.3,vel);
+				pid_val = pid(0.60,vel);
 			}else if(cont4 > 5999 && cont4 < 6999)
 			{
-				pid_val = pid(1.5,vel);
+				pid_val = pid(0.35,vel);
 			}else if(cont4 > 6999 && cont4 < 7999)
 			{
-				pid_val = pid(1.7,vel);
+				pid_val = pid(0.4,vel);
 			}else if(cont4 > 7999 && cont4 < 8999)
 			{
-				pid_val = pid(1.9,vel);
+				pid_val = pid(0.45,vel);
 			}else
 			{
-				pid_val = pid(2.1,vel);
+				pid_val = pid(0.7,vel);
 			}
+*/
 			cont4++;
 			cont3 = 0;
 		}
@@ -155,7 +160,7 @@ void demo(void *arg)
 		dutyns = duty_to_ns(pid_val);
 		//printf("Velocidad: %f  dis_new: %f pid_val: %f duty: %f \n", vel, dis_new,pid_val,dutyns);
 
-		if(dis_new >= 13)
+		if(dis_new >= dista)
 		{
 			done = TRUE;
 		}
@@ -253,6 +258,17 @@ void catch_signal(int sig)
 
 int main(int argc, char* argv[])
 {
+
+
+	if (argc != 3)
+	{
+		return(1);
+	}
+	set = atof(argv[1]);
+	dista = atof(argv[2]);
+	printf("%f %f",set, dista);
+	
+
 	/*
 	 * Xenomai
 	 */
