@@ -50,7 +50,7 @@ float pid(float sp, float pv)
 	static float err;
 	float Kp, Kd, Ki;
 	float pid;
-
+	sp = sp + 0.1105;
 	/*
 	 * Kp = 13.198342214328004;
 	 * Kd = 0.016719000000000;
@@ -92,7 +92,7 @@ float pid(float sp, float pv)
 void demo(void *arg)
 {
 	int i = 0;
-	static unsigned datosvel[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	static unsigned datosvel[10] = {0,0,0,0,0,0,0,0,0,0};
 	static float dis_old;
 	static float dis_new;
 	int cont3 = 0;
@@ -102,7 +102,7 @@ void demo(void *arg)
 	dis_new = 0;
 	while(!done){
 
-		for(i=25;i>0;i--)
+		for(i=10;i>0;i--)
 		{
 			datosvel[i]=datosvel[i-1];
 		}
@@ -110,12 +110,12 @@ void demo(void *arg)
 		/*
 		 * Guardar y empujar
 		 */
-		dis_new = datosvel[0] * 0.000139509;
-		dis_old = datosvel[25] * 0.000139509;
-		vel = (dis_new - dis_old) * 1000.0 / 2.5;
-		if(cont3 > 24 )
+		dis_new = datosvel[0] * 0.000139509 * 2;
+		dis_old = datosvel[10] * 0.000139509 * 2;
+		vel = (dis_new - dis_old) * 1000.0 / 1.0;
+		if(cont3 > 9 )
 		{
-			pid_val = pid(1.0,vel);
+			pid_val = pid(1,vel);
 			cont3 = 0;
 		}
 		cont3++;
