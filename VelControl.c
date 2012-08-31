@@ -219,8 +219,6 @@ void catch_signal(int sig)
 
 int main(int argc, char* argv[])
 {
-
-
 	if (argc != 3)
 	{
 		return(1);
@@ -228,7 +226,7 @@ int main(int argc, char* argv[])
 	set = atof(argv[1]);
 	dista = atof(argv[2]);
 	printf("%f %f",set, dista);
-	
+
 
 	/*
 	 * Xenomai
@@ -243,14 +241,13 @@ int main(int argc, char* argv[])
 	ixpio_reg_t reg;
 	ixpio_signal_t sig;
 	static struct sigaction act, act_old;
-	//printf("a %lu",dutyns);
 
 	dev_file = "/dev/ixpio1";
 
 	/* Abrir fd de la tarjeta */
 	fd = open(dev_file, O_RDWR);
 	if (fd < 0) {
-		//printf("Failure of open device file \"%s.\"\n", dev_file);
+		printf("Failure of open device file \"%s.\"\n", dev_file);
 		return FAILURE;
 	}
 
@@ -315,6 +312,5 @@ int main(int argc, char* argv[])
 	 */
 	sigaction(MY_SIG, &act_old, NULL);
 	close(fd);
-	//printf("%u",sig_counter);
 	return 0;
 }
