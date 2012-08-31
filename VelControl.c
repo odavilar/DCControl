@@ -26,13 +26,9 @@ int done = FALSE;
 int fd;
 static float set = 1;
 static float dista = 3;
-//float val[SIZE];
 float pid_val;
 RTIME dutyns = 500000;
-//RTIME dutyns = 999999;
-static struct timespec told, tnew;
 double vel;
-//double datos[SIZE];
 int duty_to_ns(float duty);
 float pid(float sp, float pv);
 
@@ -78,7 +74,6 @@ float pid(float sp, float pv)
 		I_err = 0;
 	}
 	D_err = err - err_old;
-	//printf("P_err: %f I_err: %f D_err: %f ", P_err, I_err, D_err);
 	pid = (Kp * P_err) + (Kd * D_err) + (Ki * I_err);
 	if ( pid > 100 )
 	{
@@ -120,39 +115,6 @@ void demo(void *arg)
 		if(cont3 > 9 )
 		{
 						pid_val = pid(set,vel);
-/*
-			if(cont4 <= 999)
-			{
-				pid_val = pid(0.10,vel);
-			}else if(cont4 > 999 && cont4 < 1999)
-			{
-				pid_val = pid(0.20,vel);
-			}else if(cont4 > 1999 && cont4 < 2999)
-			{
-				pid_val = pid(0.30,vel);
-			}else if(cont4 > 2999 && cont4 < 3999)
-			{
-				pid_val = pid(0.40,vel);
-			}else if(cont4 > 3999 && cont4 < 4999)
-			{
-				pid_val = pid(0.50,vel);
-			}else if(cont4 > 4999 && cont4 < 5999)
-			{
-				pid_val = pid(0.60,vel);
-			}else if(cont4 > 5999 && cont4 < 6999)
-			{
-				pid_val = pid(0.35,vel);
-			}else if(cont4 > 6999 && cont4 < 7999)
-			{
-				pid_val = pid(0.4,vel);
-			}else if(cont4 > 7999 && cont4 < 8999)
-			{
-				pid_val = pid(0.45,vel);
-			}else
-			{
-				pid_val = pid(0.7,vel);
-			}
-*/
 			cont4++;
 			cont3 = 0;
 		}
@@ -190,7 +152,6 @@ void demo(void *arg)
 
 void move(void *arg)
 {
-	RTIME now, previous;
 	ixpio_reg_t reg;
 	unsigned short int data = 0;
 	int bit = 0;
@@ -278,9 +239,8 @@ int main(int argc, char* argv[])
 	/*
 	 * Ixpio
 	 */
-	int index;
 	char *dev_file;
-	ixpio_reg_t reg,reg1;
+	ixpio_reg_t reg;
 	ixpio_signal_t sig;
 	static struct sigaction act, act_old;
 	//printf("a %lu",dutyns);
