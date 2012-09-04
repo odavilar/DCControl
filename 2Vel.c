@@ -57,16 +57,17 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-	if(sp<=.5){
+	if(sp <= 0.5){
 
 		sp = - 52.984 * (sp*sp*sp*sp*sp) - 407.74 * (sp*sp*sp*sp) + 835.42 * (sp*sp*sp) - 570.08 * (sp*sp) + 166.49 * sp - 17.565;
 
-	}else if(sp>.5 && sp<=1.65){
+	}else if(sp > 0.5 && sp <= 1.65){
 		sp = -1.6172 * (sp*sp*sp*sp*sp*sp) + 12.723 * (sp*sp*sp*sp*sp) - 40.424 * (sp*sp*sp*sp) + 66.449 * (sp*sp*sp) - 59.489 * (sp*sp) + 28.653 * sp - 5.1674;
 	}else{
 
 		sp =  1.4898 * (sp*sp*sp*sp) - 11.638 * (sp*sp*sp) + 32.881 * (sp*sp) - 38.84 * sp + 17.792;
 	}
+
 	Kp = 200;
 	Kd = 0.000001;
 	Ki = 15047.605397115176;
