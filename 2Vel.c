@@ -17,13 +17,25 @@
 #define MotorXSignal 40
 #define MotorZSignal 41
 
+struct motor{
+	int fd;
+	float distance;
+}Motor;
+
 int duty_to_ns(float duty, float periodo);
 float pid(float sp, float pv);
 
 void sig_handler(int sig)
 {
-	static unsigned sig_counter;
-	++sig_counter;
+	static unsigned counterX, counterZ;
+
+	if(sig == MotorXSignal)
+	{
+		++counterX;
+	}else if(sig == MotorZSignal)
+	{
+		++counterZ;
+	}
 }
 
 int duty_to_ns(float duty, float periodo)
@@ -102,8 +114,10 @@ int main(int argc, char* argv[])
 
 	if (argc != 5)
 	{
+		printf("Not enough arguments supplied");
 		return(1);
 	}
+
 	setX = atof(argv[1]);
 	distaX = atof(argv[2]);
 	setZ = atof(argv[3]);
@@ -119,11 +133,11 @@ int main(int argc, char* argv[])
 	signal(SIGINT, catch_signal);
 
 	/* Ixpio */
+	int fd;
 	char *dev_file;
 	ixpio_reg_t reg;
 	ixpio_signal_t sig;
 	static struct sigaction act, act_old;
-	int fd;
 
 	dev_file = "/dev/ixpio1";
 
@@ -144,12 +158,21 @@ int main(int argc, char* argv[])
 		return FAILURE;
 	}
 
+	sigaddset(&act.sa_mask, MotorZSignal);
+	if (sigaction(MotorZSignal, &act, &act_old)) {
+		close(fd);
+		puts("Failure of signal action.");
+		return FAILURE;
+	}
+
+
 	/* Port Configuration */
 	reg.id = IXPIO_PCB;
 	reg.value = 0x01; // Enable P3 as Output
 	if (ioctl(fd, IXPIO_WRITE_REG, &reg)) {
 		close(fd);
 		sigaction(MotorXSignal, &act_old, NULL);
+		sigaction(MotorZSignal, &act_old, NULL);
 		puts("Failure of configuring port.");
 		return FAILURE;
 	}
@@ -159,6 +182,7 @@ int main(int argc, char* argv[])
 	if (ioctl(fd, IXPIO_WRITE_REG, &reg)) {
 		close(fd);
 		sigaction(MotorXSignal, &act_old, NULL);
+		sigaction(MotorZSignal, &act_old, NULL);
 		puts("Failure of configuring port.");
 		return FAILURE;
 	}
@@ -169,6 +193,7 @@ int main(int argc, char* argv[])
 	if (ioctl(fd, IXPIO_WRITE_REG, &reg)) {
 		close(fd);
 		sigaction(MotorXSignal, &act_old, NULL);
+		sigaction(MotorZSignal, &act_old, NULL);
 		puts("Failure of configuring interrupt.");
 		return FAILURE;
 	}
@@ -176,15 +201,26 @@ int main(int argc, char* argv[])
 	/* Signal Condiction */
 	sig.sid = MotorXSignal;
 	sig.pid = getpid();
-	sig.is = 0x06;   /* Signal for the P5C0 and P8C0 channels */
-	sig.edge = 0x06;  /* High level trigger */
+	sig.is = 0x02;   /* Signal for the P5C0 channel */
+	sig.edge = 0x02;  /* High level trigger */
 	if (ioctl(fd, IXPIO_SET_SIG, &sig)) {
 		close(fd);
 		sigaction(MotorXSignal, &act_old, NULL);
+		sigaction(MotorZSignal, &act_old, NULL);
 		puts("Failure of signal condiction.");
 		return FAILURE;
 	}
-
+	sig.sid = MotorZSignal;
+	sig.pid = getpid();
+	sig.is = 0x04;   /* Signal for the P8C0 channel */
+	sig.edge = 0x04;  /* High level trigger */
+	if (ioctl(fd, IXPIO_SIG_ADD, &sig)) {
+		close(fd);
+		sigaction(MotorXSignal, &act_old, NULL);
+		sigaction(MotorZSignal, &act_old, NULL);
+		puts("Failure of signal condiction.");
+		return FAILURE;
+	}
 
 	/* Xenomai */
 	mlockall(MCL_CURRENT|MCL_FUTURE);
@@ -204,7 +240,8 @@ int main(int argc, char* argv[])
 	rt_task_delete(&MoveMotorZ);
 
 	/* Ixpio */
-	sigaction(MotorXSignal, &act_old, NULL);
 	close(fd);
+	sigaction(MotorXSignal, &act_old, NULL);
+	sigaction(MotorZSignal, &act_old, NULL);
 	return 0;
 }
