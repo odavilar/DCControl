@@ -352,6 +352,13 @@ void movez(void *arg)
 
 void catch_signal(int sig)
 {
+	if( sig == SIGTERM)
+	{
+		printf("TERM\n");
+	}else if( sig == SIGINT)
+	{
+		printf("INT\n");
+	}
 }
 
 int main(int argc, char* argv[])
@@ -361,7 +368,7 @@ int main(int argc, char* argv[])
 
 	if (argc != 5)
 	{
-		printf("Not enough arguments supplied");
+		printf("Not enough arguments supplied\n");
 		return(1);
 	}
 
