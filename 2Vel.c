@@ -21,7 +21,13 @@ unsigned counterX, counterZ;
 
 typedef struct motor{
 	int * fd;
+	int periodo;
+	int done;
+	float set;
 	float distance;
+	float vel;
+	float pid_val;
+	RTIME dutyns;
 }Motor;
 
 int duty_to_ns(float duty, float periodo);
@@ -91,22 +97,257 @@ float pid(float sp, float pv)
 void controlX(void *arg)
 {
 	Motor *m = arg;
-	 printf("%f",m->distance);
+	int i = 0;
+	static unsigned datosvel[10] = {0,0,0,0,0,0,0,0,0,0};
+	static float dis_old = 0;
+	static float dis_new = 0;
+	int cont0 = 0;
+	int cont1 = 0;
+	int err;
+
+	rt_task_set_periodic(NULL, TM_NOW, 100000);
+
+	while( !m->done ){
+		for(i = 10; i > 0; i--)
+		{
+			datosvel[i]=datosvel[i-1];
+		}
+		datosvel[0] = counterX;
+		dis_new = datosvel[0] * 0.000139509 * 2;
+		dis_old = datosvel[10] * 0.000139509 * 2;
+		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
+		if(cont0 > 9 )
+		{
+			m->pid_val = pid(m->set,m->vel);
+			cont1++;
+			cont0 = 0;
+		}
+		cont0++;
+
+		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
+		//printf("Velocidad: %f  dis_new: %f pid_val: %f duty: %f \n", vel, dis_new,pid_val,dutyns);
+
+		if(dis_new >= m->distance)
+		{
+			m->done = TRUE;
+		}
+		err = rt_task_wait_period(NULL);
+		if ( err != 0 )
+		{
+			switch(err)
+			{
+				case -ETIMEDOUT:
+					printf("\nVETIMEOUT\n");
+					break;
+				case -EINTR:
+					printf("\nVEINTR\n");
+					break;
+				case -EPERM:
+					printf("\nVEPERM\n");
+					break;
+				case -EWOULDBLOCK:
+					printf("\nVEWOULDBLOCK\n");
+					break;
+				default:
+					break;
+			}
+		}
+	}
 }
 
 void controlZ(void *arg)
 {
 	Motor *m = arg;
+	int i = 0;
+	static unsigned datosvel[10] = {0,0,0,0,0,0,0,0,0,0};
+	static float dis_old = 0;
+	static float dis_new = 0;
+	int cont0 = 0;
+	int cont1 = 0;
+	int err;
+
+	rt_task_set_periodic(NULL, TM_NOW, 100000);
+
+	while( !m->done ){
+		for(i = 10; i > 0; i--)
+		{
+			datosvel[i]=datosvel[i-1];
+		}
+		datosvel[0] = counterX;
+		dis_new = datosvel[0] * 0.000139509 * 2;
+		dis_old = datosvel[10] * 0.000139509 * 2;
+		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
+		if(cont0 > 9 )
+		{
+			m->pid_val = pid(m->set,m->vel);
+			cont1++;
+			cont0 = 0;
+		}
+		cont0++;
+
+		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
+		//printf("Velocidad: %f  dis_new: %f pid_val: %f duty: %f \n", vel, dis_new,pid_val,dutyns);
+
+		if(dis_new >= m->distance)
+		{
+			m->done = TRUE;
+		}
+		err = rt_task_wait_period(NULL);
+		if ( err != 0 )
+		{
+			switch(err)
+			{
+				case -ETIMEDOUT:
+					printf("\nVETIMEOUT\n");
+					break;
+				case -EINTR:
+					printf("\nVEINTR\n");
+					break;
+				case -EPERM:
+					printf("\nVEPERM\n");
+					break;
+				case -EWOULDBLOCK:
+					printf("\nVEWOULDBLOCK\n");
+					break;
+				default:
+					break;
+			}
+		}
+	}
 }
 
 void movex(void *arg)
 {
 	Motor *m = arg;
+
+	ixpio_reg_t reg;
+	unsigned short int data = 0;
+	int bit = 0;
+	int err;
+
+	rt_task_set_periodic(NULL, TM_NOW, m->periodo);
+
+	reg.id = IXPIO_P3;
+	reg.value = data;
+	if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
+		close(*m->fd);
+		puts("Failure of configuring interrupt.");
+	}
+
+	while( !m->done )
+	{
+		data ^= ( 1 << bit );
+		reg.value = data;
+		if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
+			close(*m->fd);
+			puts("Failure of configuring interrupt.");
+		}
+		err = rt_task_sleep(m->dutyns);
+		if ( err != 0 )
+		{
+			printf("\nsleep ERROR\n %d", err);
+		}
+		data ^= ( 1 << bit );
+		reg.value = data;
+		if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
+			close(*m->fd);
+			puts("Failure of configuring interrupt.");
+		}
+		err = rt_task_wait_period(NULL);
+		if ( err != 0 )
+		{
+			switch(err)
+			{
+				case -ETIMEDOUT:
+					printf("\nETIMEOUT\n");
+					break;
+				case -EINTR:
+					printf("\nEINTR\n");
+					break;
+				case -EPERM:
+					printf("\nEPERM\n");
+					break;
+				case -EWOULDBLOCK:
+					printf("\nEWOULDBLOCK\n");
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	data = 0;
+	reg.value = data;
+	if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
+		close(*m->fd);
+		puts("Failure of configuring interrupt.");
+	}
 }
 
 void movez(void *arg)
 {
 	Motor *m = arg;
+
+	ixpio_reg_t reg;
+	unsigned short int data = 0;
+	int bit = 0;
+	int err;
+
+	rt_task_set_periodic(NULL, TM_NOW, m->periodo);
+
+	reg.id = IXPIO_P3;
+	reg.value = data;
+	if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
+		close(*m->fd);
+		puts("Failure of configuring interrupt.");
+	}
+
+	while( !m->done )
+	{
+		data ^= ( 1 << bit );
+		reg.value = data;
+		if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
+			close(*m->fd);
+			puts("Failure of configuring interrupt.");
+		}
+		err = rt_task_sleep(m->dutyns);
+		if ( err != 0 )
+		{
+			printf("\nsleep ERROR\n %d", err);
+		}
+		data ^= ( 1 << bit );
+		reg.value = data;
+		if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
+			close(*m->fd);
+			puts("Failure of configuring interrupt.");
+		}
+		err = rt_task_wait_period(NULL);
+		if ( err != 0 )
+		{
+			switch(err)
+			{
+				case -ETIMEDOUT:
+					printf("\nETIMEOUT\n");
+					break;
+				case -EINTR:
+					printf("\nEINTR\n");
+					break;
+				case -EPERM:
+					printf("\nEPERM\n");
+					break;
+				case -EWOULDBLOCK:
+					printf("\nEWOULDBLOCK\n");
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	data = 0;
+	reg.value = data;
+	if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
+		close(*m->fd);
+		puts("Failure of configuring interrupt.");
+	}
 }
 
 void catch_signal(int sig)
@@ -115,7 +356,8 @@ void catch_signal(int sig)
 
 int main(int argc, char* argv[])
 {
-	float setX,setZ,distaX,distaZ;
+	Motor MotorX;
+	Motor MotorZ;
 
 	if (argc != 5)
 	{
@@ -123,18 +365,15 @@ int main(int argc, char* argv[])
 		return(1);
 	}
 
-	setX = atof(argv[1]);
-	distaX = atof(argv[2]);
-	setZ = atof(argv[3]);
-	distaZ = atof(argv[4]);
+	MotorX.set = atof(argv[1]);
+	MotorX.distance = atof(argv[2]);
+	MotorZ.set = atof(argv[3]);
+	MotorZ.distance = atof(argv[4]);
 
 	RT_TASK MoveMotorX;
 	RT_TASK MoveMotorZ;
 	RT_TASK ControlX;
 	RT_TASK ControlZ;
-
-	Motor MotorX;
-	Motor MotorZ;
 
 	Motor *MotorX_ptr;
 	Motor *MotorZ_ptr;
@@ -235,9 +474,18 @@ int main(int argc, char* argv[])
 		return FAILURE;
 	}
 
-	MotorX.distance = 10;
 	MotorX.fd = &fd;
 	MotorZ.fd = &fd;
+	MotorX.periodo= 1000000;
+	MotorZ.periodo= 1000000;
+	MotorX.dutyns = 500000;
+	MotorZ.dutyns = 500000;
+	MotorX.distance = 3;
+	MotorZ.distance = 3;
+	MotorX.done = FALSE;
+	MotorZ.done = FALSE;
+	MotorX.set = 1;
+	MotorZ.set = 1;
 
 	/* Xenomai */
 	mlockall(MCL_CURRENT|MCL_FUTURE);
