@@ -171,9 +171,9 @@ void controlZ(void *arg)
 	while( !m->done ){
 		for(i = 10; i > 0; i--)
 		{
-			datosvel[i]=datosvel[i-1];
+			datosvel[i] = datosvel[i - 1];
 		}
-		datosvel[0] = counterX;
+		datosvel[0] = counterZ;
 		dis_new = datosvel[0] * 0.000139509 * 2;
 		dis_old = datosvel[10] * 0.000139509 * 2;
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
@@ -294,7 +294,7 @@ void movez(void *arg)
 
 	rt_task_set_periodic(NULL, TM_NOW, m->periodo);
 
-	reg.id = IXPIO_P3;
+	reg.id = IXPIO_P6;
 	reg.value = data;
 	if (ioctl(*m->fd, IXPIO_WRITE_REG, &reg)) {
 		close(*m->fd);
