@@ -17,8 +17,10 @@
 #define MotorXSignal 40
 #define MotorZSignal 41
 
-struct motor{
-	int fd;
+unsigned counterX, counterZ;
+
+typedef struct motor{
+	int * fd;
 	float distance;
 }Motor;
 
@@ -27,8 +29,6 @@ float pid(float sp, float pv);
 
 void sig_handler(int sig)
 {
-	static unsigned counterX, counterZ;
-
 	if(sig == MotorXSignal)
 	{
 		++counterX;
@@ -90,18 +90,23 @@ float pid(float sp, float pv)
 
 void controlX(void *arg)
 {
+	Motor *m = arg;
+	 printf("%f",m->distance);
 }
 
 void controlZ(void *arg)
 {
+	Motor *m = arg;
 }
 
 void movex(void *arg)
 {
+	Motor *m = arg;
 }
 
 void movez(void *arg)
 {
+	Motor *m = arg;
 }
 
 void catch_signal(int sig)
@@ -127,6 +132,14 @@ int main(int argc, char* argv[])
 	RT_TASK MoveMotorZ;
 	RT_TASK ControlX;
 	RT_TASK ControlZ;
+
+	Motor MotorX;
+	Motor MotorZ;
+
+	Motor *MotorX_ptr;
+	Motor *MotorZ_ptr;
+	MotorX_ptr= &MotorX;
+	MotorZ_ptr= &MotorZ;
 
 	/* Xenomai */
 	signal(SIGTERM, catch_signal);
@@ -222,16 +235,20 @@ int main(int argc, char* argv[])
 		return FAILURE;
 	}
 
+	MotorX.distance = 10;
+	MotorX.fd = &fd;
+	MotorZ.fd = &fd;
+
 	/* Xenomai */
 	mlockall(MCL_CURRENT|MCL_FUTURE);
 	rt_task_create(&ControlX, "controlx", 0, 90, T_JOINABLE );
 	rt_task_create(&MoveMotorX, "mmotorx", 0, 99, T_JOINABLE );
 	rt_task_create(&ControlZ, "controlz", 0, 90, T_JOINABLE );
 	rt_task_create(&MoveMotorZ, "mmotorz", 0, 99, T_JOINABLE );
-	rt_task_start(&ControlX, &controlX, NULL);
-	rt_task_start(&ControlZ, &controlZ, NULL);
-	rt_task_start(&MoveMotorX, &movex, NULL);
-	rt_task_start(&MoveMotorZ, &movez, NULL);
+	rt_task_start(&ControlX, &controlX, (void*)MotorX_ptr);
+	rt_task_start(&ControlZ, &controlZ, (void*)MotorZ_ptr);
+	rt_task_start(&MoveMotorX, &movex, (void*)MotorX_ptr);
+	rt_task_start(&MoveMotorZ, &movez, (void*)MotorZ_ptr);
 	rt_task_join(&ControlX);
 	rt_task_join(&ControlZ);
 	rt_task_delete(&ControlX);
