@@ -137,16 +137,16 @@ void controlX(void *arg)
 			switch(err)
 			{
 				case -ETIMEDOUT:
-					printf("\nVETIMEOUT\n");
+					printf("VETIMEOUT\n");
 					break;
 				case -EINTR:
-					printf("\nVEINTR\n");
+					printf("VEINTR\n");
 					break;
 				case -EPERM:
-					printf("\nVEPERM\n");
+					printf("VEPERM\n");
 					break;
 				case -EWOULDBLOCK:
-					printf("\nVEWOULDBLOCK\n");
+					printf("VEWOULDBLOCK\n");
 					break;
 				default:
 					break;
@@ -198,16 +198,16 @@ void controlZ(void *arg)
 			switch(err)
 			{
 				case -ETIMEDOUT:
-					printf("\nVETIMEOUT\n");
+					printf("VETIMEOUT\n");
 					break;
 				case -EINTR:
-					printf("\nVEINTR\n");
+					printf("VEINTR\n");
 					break;
 				case -EPERM:
-					printf("\nVEPERM\n");
+					printf("VEPERM\n");
 					break;
 				case -EWOULDBLOCK:
-					printf("\nVEWOULDBLOCK\n");
+					printf("VEWOULDBLOCK\n");
 					break;
 				default:
 					break;
@@ -245,7 +245,7 @@ void movex(void *arg)
 		err = rt_task_sleep(m->dutyns);
 		if ( err != 0 )
 		{
-			printf("\nsleep ERROR\n %d", err);
+			printf("sleep ERROR\n %d", err);
 		}
 		data ^= ( 1 << bit );
 		reg.value = data;
@@ -259,16 +259,16 @@ void movex(void *arg)
 			switch(err)
 			{
 				case -ETIMEDOUT:
-					printf("\nETIMEOUT\n");
+					printf("ETIMEOUT\n");
 					break;
 				case -EINTR:
-					printf("\nEINTR\n");
+					printf("EINTR\n");
 					break;
 				case -EPERM:
-					printf("\nEPERM\n");
+					printf("EPERM\n");
 					break;
 				case -EWOULDBLOCK:
-					printf("\nEWOULDBLOCK\n");
+					printf("EWOULDBLOCK\n");
 					break;
 				default:
 					break;
@@ -312,7 +312,7 @@ void movez(void *arg)
 		err = rt_task_sleep(m->dutyns);
 		if ( err != 0 )
 		{
-			printf("\nsleep ERROR\n %d", err);
+			printf("sleep ERROR\n %d", err);
 		}
 		data ^= ( 1 << bit );
 		reg.value = data;
@@ -326,16 +326,16 @@ void movez(void *arg)
 			switch(err)
 			{
 				case -ETIMEDOUT:
-					printf("\nETIMEOUT\n");
+					printf("ETIMEOUT\n");
 					break;
 				case -EINTR:
-					printf("\nEINTR\n");
+					printf("EINTR\n");
 					break;
 				case -EPERM:
-					printf("\nEPERM\n");
+					printf("EPERM\n");
 					break;
 				case -EWOULDBLOCK:
-					printf("\nEWOULDBLOCK\n");
+					printf("EWOULDBLOCK\n");
 					break;
 				default:
 					break;
