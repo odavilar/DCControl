@@ -18,6 +18,7 @@
 #define MotorZSignal 41
 
 unsigned counterX, counterZ;
+char Exit;
 
 typedef struct motor{
 	int * fd;
@@ -108,7 +109,7 @@ void controlX(void *arg)
 
 	rt_task_set_periodic(NULL, TM_NOW, 100000);
 
-	while( !m->done ){
+	while( !m->done && Exit == FALSE ){
 		for(i = 10; i > 0; i--)
 		{
 			datosvel[i]=datosvel[i-1];
@@ -169,7 +170,7 @@ void controlZ(void *arg)
 
 	rt_task_set_periodic(NULL, TM_NOW, 100000);
 
-	while( !m->done ){
+	while( !m->done && Exit == FALSE ){
 		for(i = 10; i > 0; i--)
 		{
 			datosvel[i] = datosvel[i - 1];
@@ -235,7 +236,7 @@ void movex(void *arg)
 		puts("Failure of configuring interrupt.");
 	}
 
-	while( !m->done )
+	while( !m->done && Exit == FALSE )
 	{
 		data ^= ( 1 << bit );
 		reg.value = data;
@@ -302,7 +303,7 @@ void movez(void *arg)
 		puts("Failure of configuring interrupt.");
 	}
 
-	while( !m->done )
+	while( !m->done && Exit == FALSE )
 	{
 		data ^= ( 1 << bit );
 		reg.value = data;
@@ -356,6 +357,7 @@ void catch_signal(int sig)
 	if( sig == SIGTERM)
 	{
 		printf("TERM\n");
+		Exit = TRUE;
 	}else if( sig == SIGINT)
 	{
 		printf("INT\n");
@@ -366,6 +368,7 @@ int main(int argc, char* argv[])
 {
 	Motor MotorX;
 	Motor MotorZ;
+	Exit = FALSE;
 
 	if (argc != 5)
 	{
