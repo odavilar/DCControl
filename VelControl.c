@@ -227,16 +227,11 @@ int main(int argc, char* argv[])
 	dista = atof(argv[2]);
 	printf("%f %f",set, dista);
 
-
-	/*
-	 * Xenomai
-	 */
+	/* Xenomai */
 	signal(SIGTERM, catch_signal);
 	signal(SIGINT, catch_signal);
 
-	/*
-	 * Ixpio
-	 */
+	/* Ixpio */
 	char *dev_file;
 	ixpio_reg_t reg;
 	ixpio_signal_t sig;
@@ -244,14 +239,14 @@ int main(int argc, char* argv[])
 
 	dev_file = "/dev/ixpio1";
 
-	/* Abrir fd de la tarjeta */
+	/* Open board */
 	fd = open(dev_file, O_RDWR);
 	if (fd < 0) {
 		printf("Failure of open device file \"%s.\"\n", dev_file);
 		return FAILURE;
 	}
 
-	/* Activar Handler de la señal */
+	/* Enable signal Handler */
 	act.sa_handler = sig_handler;
 	sigemptyset(&act.sa_mask);
 	sigaddset(&act.sa_mask, MY_SIG);
@@ -261,9 +256,9 @@ int main(int argc, char* argv[])
 		return FAILURE;
 	}
 
-	/* Configuración del Puerto */
+	/* Port Configuration */
 	reg.id = IXPIO_PCB;
-	reg.value = 0x01; // Habilitar P3 como salida
+	reg.value = 0x01; // Enable P3 as Output
 	if (ioctl(fd, IXPIO_WRITE_REG, &reg)) {
 		close(fd);
 		sigaction(MY_SIG, &act_old, NULL);
@@ -271,9 +266,9 @@ int main(int argc, char* argv[])
 		return FAILURE;
 	}
 
-	/* Configuro interrupciones */
+	/* Interrupts Configuration */
 	reg.id = IXPIO_IMCR;
-	reg.value = 0x02; //Habilito contador
+	reg.value = 0x02;
 	if (ioctl(fd, IXPIO_WRITE_REG, &reg)) {
 		close(fd);
 		sigaction(MY_SIG, &act_old, NULL);
