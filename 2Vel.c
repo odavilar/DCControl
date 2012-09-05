@@ -110,13 +110,13 @@ void controlX(void *arg)
 	rt_task_set_periodic(NULL, TM_NOW, 100000);
 
 	while( !m->done && Exit == FALSE ){
-		for(i = 10; i > 0; i--)
+		for(i = 9; i > 0; i--)
 		{
 			datosvel[i]=datosvel[i-1];
 		}
 		datosvel[0] = counterX;
 		dis_new = datosvel[0] * 0.000139509 * 2;
-		dis_old = datosvel[10] * 0.000139509 * 2;
+		dis_old = datosvel[9] * 0.000139509 * 2;
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
@@ -127,7 +127,7 @@ void controlX(void *arg)
 		cont0++;
 
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
-		//printf("Velocidad: %f  dis_new: %f pid_val: %f duty: %f \n", vel, dis_new,pid_val,dutyns);
+		printf("VelocidadX: %f  dis_newX: %f pid_valX: %f dutyX: %f \n", m->vel, dis_new, dis_old, m->pid_val, m->dutyns);
 
 		if(dis_new >= m->distance)
 		{
@@ -171,13 +171,13 @@ void controlZ(void *arg)
 	rt_task_set_periodic(NULL, TM_NOW, 100000);
 
 	while( !m->done && Exit == FALSE ){
-		for(i = 10; i > 0; i--)
+		for(i = 9; i > 0; i--)
 		{
 			datosvel[i] = datosvel[i - 1];
 		}
 		datosvel[0] = counterZ;
 		dis_new = datosvel[0] * 0.000139509 * 2;
-		dis_old = datosvel[10] * 0.000139509 * 2;
+		dis_old = datosvel[9] * 0.000139509 * 2;
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
@@ -188,7 +188,7 @@ void controlZ(void *arg)
 		cont0++;
 
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
-		//printf("Velocidad: %f  dis_new: %f pid_val: %f duty: %f \n", vel, dis_new,pid_val,dutyns);
+		printf("VelocidadZ: %f  dis_newZ: %f pid_valZ: %f dutyZ: %f \n", m->vel, dis_new, m->pid_val, m->dutyns);
 
 		if(dis_new >= m->distance)
 		{
@@ -261,7 +261,7 @@ void movex(void *arg)
 			switch(err)
 			{
 				case -ETIMEDOUT:
-					printf("ETIMEOUT\n");
+					printf("ETIMEOUTX\n");
 					break;
 				case -EINTR:
 					printf("EINTR\n");
@@ -328,7 +328,7 @@ void movez(void *arg)
 			switch(err)
 			{
 				case -ETIMEDOUT:
-					printf("ETIMEOUT\n");
+					printf("ETIMEOUTZ\n");
 					break;
 				case -EINTR:
 					printf("EINTR\n");
@@ -380,7 +380,7 @@ int main(int argc, char* argv[])
 	MotorX.distance = atof(argv[2]);
 	MotorZ.set = atof(argv[3]);
 	MotorZ.distance = atof(argv[4]);
-
+	printf("%f %f %f %f\n", MotorX.set, MotorX.distance, MotorX.set, MotorX.distance);
 	RT_TASK MoveMotorX;
 	RT_TASK MoveMotorZ;
 	RT_TASK ControlX;
@@ -388,8 +388,8 @@ int main(int argc, char* argv[])
 
 	Motor *MotorX_ptr;
 	Motor *MotorZ_ptr;
-	MotorX_ptr= &MotorX;
-	MotorZ_ptr= &MotorZ;
+	MotorX_ptr = &MotorX;
+	MotorZ_ptr = &MotorZ;
 
 	/* Xenomai */
 	signal(SIGTERM, catch_signal);
@@ -491,12 +491,12 @@ int main(int argc, char* argv[])
 	MotorZ.periodo= 1000000;
 	MotorX.dutyns = 500000;
 	MotorZ.dutyns = 500000;
-	MotorX.distance = 3;
-	MotorZ.distance = 3;
 	MotorX.done = FALSE;
 	MotorZ.done = FALSE;
-	MotorX.set = 1;
+	/*MotorX.set = 1;
 	MotorZ.set = 1;
+	MotorX.distance = 1;
+	MotorZ.distance = 1;*/
 
 	/* Xenomai */
 	mlockall(MCL_CURRENT|MCL_FUTURE);

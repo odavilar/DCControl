@@ -132,16 +132,16 @@ void demo(void *arg)
 			switch(z)
 			{
 				case -ETIMEDOUT:
-					printf("\nVETIMEOUT\n");
+					printf("VETIMEOUT\n");
 					break;
 				case -EINTR:
-					printf("\nVEINTR\n");
+					printf("VEINTR\n");
 					break;
 				case -EPERM:
-					printf("\nVEPERM\n");
+					printf("VEPERM\n");
 					break;
 				case -EWOULDBLOCK:
-					printf("\nVEWOULDBLOCK\n");
+					printf("VEWOULDBLOCK\n");
 					break;
 				default:
 					break;
@@ -189,16 +189,16 @@ void move(void *arg)
 			switch(z)
 			{
 				case -ETIMEDOUT:
-					printf("\nETIMEOUT\n");
+					printf("ETIMEOUT\n");
 					break;
 				case -EINTR:
-					printf("\nEINTR\n");
+					printf("EINTR\n");
 					break;
 				case -EPERM:
-					printf("\nEPERM\n");
+					printf("EPERM\n");
 					break;
 				case -EWOULDBLOCK:
-					printf("\nEWOULDBLOCK\n");
+					printf("EWOULDBLOCK\n");
 					break;
 				default:
 					break;
@@ -225,7 +225,7 @@ int main(int argc, char* argv[])
 	}
 	set = atof(argv[1]);
 	dista = atof(argv[2]);
-	printf("%f %f",set, dista);
+	printf("%f %f\n",set, dista);
 
 	/* Xenomai */
 	signal(SIGTERM, catch_signal);
