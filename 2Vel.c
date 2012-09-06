@@ -59,18 +59,13 @@ float pid(float sp, float pv)
 	float pid;
 -121.87x5 + 862.97x4 - 2301.2x3 + 2852.8x2 - 1385.3x + 213.91
 
-/*
-	if(sp <= 0.5){
 
-		sp = - 52.984 * (sp*sp*sp*sp*sp) - 407.74 * (sp*sp*sp*sp) + 835.42 * (sp*sp*sp) - 570.08 * (sp*sp) + 166.49 * sp - 17.565;
-
-	}else if(sp > 0.5 && sp <= 1.65){
-		sp = -1.6172 * (sp*sp*sp*sp*sp*sp) + 12.723 * (sp*sp*sp*sp*sp) - 40.424 * (sp*sp*sp*sp) + 66.449 * (sp*sp*sp) - 59.489 * (sp*sp) + 28.653 * sp - 5.1674;
+	if(sp > 0.5){
+		sp = - 121.87 * (sp*sp*sp*sp*sp) + 862.97 * (sp*sp*sp*sp) - 2301.2 * (sp*sp*sp) + 2852.8 * (sp*sp) - 1385.3 * sp + 213.91;
 	}else{
-
-		sp =  1.4898 * (sp*sp*sp*sp) - 11.638 * (sp*sp*sp) + 32.881 * (sp*sp) - 38.84 * sp + 17.792;
+		sp = 1.5333 * (sp*sp) + 0.3159 * sp - 0.1051;
 	}
-*/
+
 	Kp =0.1839235159018;
 	Kd =0.000000001;
 	Ki =0.0672091666664;
