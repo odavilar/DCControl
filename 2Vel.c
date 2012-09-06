@@ -57,8 +57,6 @@ float pid(float sp, float pv)
 	static float err;
 	float Kp, Kd, Ki;
 	float pid;
--121.87x5 + 862.97x4 - 2301.2x3 + 2852.8x2 - 1385.3x + 213.91
-
 
 	if(sp > 0.5){
 		sp = - 121.87 * (sp*sp*sp*sp*sp) + 862.97 * (sp*sp*sp*sp) - 2301.2 * (sp*sp*sp) + 2852.8 * (sp*sp) - 1385.3 * sp + 213.91;
