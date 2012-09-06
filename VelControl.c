@@ -49,7 +49,7 @@ float pid(float sp, float pv)
 	static float err;
 	float Kp, Kd, Ki;
 	float pid;
-/*
+
 	if(sp<=.5){
 
 		sp = - 52.984 * (sp*sp*sp*sp*sp) - 407.74 * (sp*sp*sp*sp) + 835.42 * (sp*sp*sp) - 570.08 * (sp*sp) + 166.49 * sp - 17.565;
@@ -59,7 +59,7 @@ float pid(float sp, float pv)
 	}else{
 
 		sp =  1.4898 * (sp*sp*sp*sp) - 11.638 * (sp*sp*sp) + 32.881 * (sp*sp) - 38.84 * sp + 17.792;
-	}*/
+	}
 	Kp = 200;
 	Kd = 0.000001;
 	Ki = 15047.605397115176;
@@ -101,7 +101,7 @@ void demo(void *arg)
 	dis_new = 0;
 	while(!done){
 
-		for(i=9;i>0;i--)
+		for(i=10;i>0;i--)
 		{
 			datosvel[i]=datosvel[i-1];
 		}
@@ -110,7 +110,7 @@ void demo(void *arg)
 		 * Guardar y empujar
 		 */
 		dis_new = datosvel[0] * 0.000139509 * 2;
-		dis_old = datosvel[9] * 0.000139509 * 2;
+		dis_old = datosvel[10] * 0.000139509 * 2;
 		vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont3 > 9 )
 		{
