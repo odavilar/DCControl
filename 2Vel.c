@@ -69,9 +69,9 @@ float pid(float sp, float pv)
 		sp =  1.4898 * (sp*sp*sp*sp) - 11.638 * (sp*sp*sp) + 32.881 * (sp*sp) - 38.84 * sp + 17.792;
 	}*/
 
-	Kp = 100;
-	Kd = 0.000001;
-	Ki = 5047.605397115176;
+	Kp =752.1839235159018;
+	Kd =2.233155946614353;
+	Ki =881.0672091666664;
 
 	err_old = err;
 	err = sp - pv;
@@ -120,7 +120,7 @@ void controlX(void *arg)
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
-			//m->pid_val = pid(m->set,m->vel);
+			m->pid_val = pid(m->set,m->vel);
 			cont1++;
 			cont0 = 0;
 		}
@@ -128,13 +128,14 @@ void controlX(void *arg)
 
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
 		//printf("VelocidadX: %f  dis_newX: %f pid_valX: %f dutyX: %f \n", m->vel, dis_new, dis_old, m->pid_val, m->dutyns);
+		printf("VelocidadX: %f \n", m->vel);
 
 		if(dis_new >= m->distance)
 		{
 			m->done = TRUE;
 		}
 		err = rt_task_wait_period(NULL);
-		if ( err != 0 )
+/*		if ( err != 0 )
 		{
 			switch(err)
 			{
@@ -154,6 +155,7 @@ void controlX(void *arg)
 					break;
 			}
 		}
+		*/
 	}
 }
 
@@ -181,7 +183,7 @@ void controlZ(void *arg)
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
-			//m->pid_val = pid(m->set,m->vel);
+			m->pid_val = pid(m->set,m->vel);
 			cont1++;
 			cont0 = 0;
 		}
@@ -189,13 +191,14 @@ void controlZ(void *arg)
 
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
 		//printf("VelocidadZ: %f  dis_newZ: %f pid_valZ: %f dutyZ: %f \n", m->vel, dis_new, m->pid_val, m->dutyns);
+		printf("VelocidadZ: %f \n", m->vel);
 
 		if(dis_new >= m->distance)
 		{
 			m->done = TRUE;
 		}
 		err = rt_task_wait_period(NULL);
-		if ( err != 0 )
+/*		if ( err != 0 )
 		{
 			switch(err)
 			{
@@ -215,6 +218,7 @@ void controlZ(void *arg)
 					break;
 			}
 		}
+		*/
 	}
 }
 
@@ -256,7 +260,7 @@ void movex(void *arg)
 			puts("Failure of configuring interrupt.");
 		}
 		err = rt_task_wait_period(NULL);
-		if ( err != 0 )
+/*		if ( err != 0 )
 		{
 			switch(err)
 			{
@@ -275,7 +279,7 @@ void movex(void *arg)
 				default:
 					break;
 			}
-		}
+		}*/
 	}
 	data = 0;
 	reg.value = data;
@@ -323,7 +327,7 @@ void movez(void *arg)
 			puts("Failure of configuring interrupt.");
 		}
 		err = rt_task_wait_period(NULL);
-		if ( err != 0 )
+/*		if ( err != 0 )
 		{
 			switch(err)
 			{
@@ -342,7 +346,7 @@ void movez(void *arg)
 				default:
 					break;
 			}
-		}
+		}*/
 	}
 	data = 0;
 	reg.value = data;
@@ -489,14 +493,14 @@ int main(int argc, char* argv[])
 	MotorZ.fd = &fd;
 	MotorX.periodo= 1000000;
 	MotorZ.periodo= 1000000;
-	MotorX.dutyns = 100000;
-	MotorZ.dutyns = 100000;
+	MotorX.dutyns = 500000;
+	MotorZ.dutyns = 500000;
 	MotorX.done = FALSE;
 	MotorZ.done = FALSE;
 	/*MotorX.set = 1;
-	MotorZ.set = 1;
+	MotorZ.set = 1;*/
 	MotorX.distance = 1;
-	MotorZ.distance = 1;*/
+	MotorZ.distance = 1;
 
 	/* Xenomai */
 	mlockall(MCL_CURRENT|MCL_FUTURE);
