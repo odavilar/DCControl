@@ -1,6 +1,22 @@
 #!/bin/bash
-if [ -z $1 ]; then
-	echo "Faltó el parámetro."
-else
-	gcc $1.c -ggdb -I/home/odavilar/workspace/ixpio/include/ -I/lib/modules/`uname -r`/build/include/xenomai/ -I/lib/modules/`uname -r`/build/include/xenomai/posix -I/usr/xenomai/include -D_GNU_SOURCE -D_REENTRANT -D__XENO__ -lnative -L/usr/xenomai/lib -lxenomai -lpthread -lrt -o $1
-fi
+
+DC_CPPFLAGS="-I/home/odavilar/workspace/ixpio/include/ -I/lib/modules/`uname -r`/build/include/xenomai/ -I/lib/modules/`uname -r`/build/include/xenomai/posix -I/usr/xenomai/include -D_GNU_SOURCE -D_REENTRANT -D__XENO__"
+DC_LDFLAGS="-lnative -L/usr/xenomai/lib -lxenomai -lpthread -lrt"
+DC_SPLINTFLAGS="+posixlib -unrecogdirective"
+
+[ ${#} -lt 1 ] && echo "Faltó el archivo a compilar." && exit 1;
+
+LARC="${1}"
+for i in "${LARC}" "${LARC}.c"; do
+[ -e "${i}" ] && ARC="${i}" && break;
+done
+[ -z "${ARC}" ] && echo "Archivo ${LARC} no existe." && exit 1;
+
+
+echo "Análisis de código..."
+splint ${DC_SPLINTFLAGS} ${DC_CPPFLAGS} ${ARC}
+
+echo "Compilando..."
+gcc ${ARC} -ggdb ${DC_CPPFLAGS} ${DC_LDFLAGS} -o ${ARC%%.c}
+
+echo "Listo."
