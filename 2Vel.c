@@ -58,7 +58,7 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-	if(sp <= 0.5){
+/*	if(sp <= 0.5){
 
 		sp = - 52.984 * (sp*sp*sp*sp*sp) - 407.74 * (sp*sp*sp*sp) + 835.42 * (sp*sp*sp) - 570.08 * (sp*sp) + 166.49 * sp - 17.565;
 
@@ -67,11 +67,11 @@ float pid(float sp, float pv)
 	}else{
 
 		sp =  1.4898 * (sp*sp*sp*sp) - 11.638 * (sp*sp*sp) + 32.881 * (sp*sp) - 38.84 * sp + 17.792;
-	}
+	}*/
 
-	Kp = 200;
+	Kp = 100;
 	Kd = 0.000001;
-	Ki = 15047.605397115176;
+	Ki = 5047.605397115176;
 
 	err_old = err;
 	err = sp - pv;
@@ -120,14 +120,14 @@ void controlX(void *arg)
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
-			m->pid_val = pid(m->set,m->vel);
+			//m->pid_val = pid(m->set,m->vel);
 			cont1++;
 			cont0 = 0;
 		}
 		cont0++;
 
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
-		printf("VelocidadX: %f  dis_newX: %f pid_valX: %f dutyX: %f \n", m->vel, dis_new, dis_old, m->pid_val, m->dutyns);
+		//printf("VelocidadX: %f  dis_newX: %f pid_valX: %f dutyX: %f \n", m->vel, dis_new, dis_old, m->pid_val, m->dutyns);
 
 		if(dis_new >= m->distance)
 		{
@@ -181,14 +181,14 @@ void controlZ(void *arg)
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
-			m->pid_val = pid(m->set,m->vel);
+			//m->pid_val = pid(m->set,m->vel);
 			cont1++;
 			cont0 = 0;
 		}
 		cont0++;
 
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
-		printf("VelocidadZ: %f  dis_newZ: %f pid_valZ: %f dutyZ: %f \n", m->vel, dis_new, m->pid_val, m->dutyns);
+		//printf("VelocidadZ: %f  dis_newZ: %f pid_valZ: %f dutyZ: %f \n", m->vel, dis_new, m->pid_val, m->dutyns);
 
 		if(dis_new >= m->distance)
 		{
@@ -489,8 +489,8 @@ int main(int argc, char* argv[])
 	MotorZ.fd = &fd;
 	MotorX.periodo= 1000000;
 	MotorZ.periodo= 1000000;
-	MotorX.dutyns = 500000;
-	MotorZ.dutyns = 500000;
+	MotorX.dutyns = 100000;
+	MotorZ.dutyns = 100000;
 	MotorX.done = FALSE;
 	MotorZ.done = FALSE;
 	/*MotorX.set = 1;
