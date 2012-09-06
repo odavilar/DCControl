@@ -57,8 +57,10 @@ float pid(float sp, float pv)
 	static float err;
 	float Kp, Kd, Ki;
 	float pid;
+-121.87x5 + 862.97x4 - 2301.2x3 + 2852.8x2 - 1385.3x + 213.91
 
-/*	if(sp <= 0.5){
+/*
+	if(sp <= 0.5){
 
 		sp = - 52.984 * (sp*sp*sp*sp*sp) - 407.74 * (sp*sp*sp*sp) + 835.42 * (sp*sp*sp) - 570.08 * (sp*sp) + 166.49 * sp - 17.565;
 
@@ -67,11 +69,11 @@ float pid(float sp, float pv)
 	}else{
 
 		sp =  1.4898 * (sp*sp*sp*sp) - 11.638 * (sp*sp*sp) + 32.881 * (sp*sp) - 38.84 * sp + 17.792;
-	}*/
-
-	Kp =752.1839235159018;
-	Kd =2.233155946614353;
-	Ki =881.0672091666664;
+	}
+*/
+	Kp =0.1839235159018;
+	Kd =0.000000001;
+	Ki =0.0672091666664;
 
 	err_old = err;
 	err = sp - pv;
@@ -128,34 +130,34 @@ void controlX(void *arg)
 
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
 		//printf("VelocidadX: %f  dis_newX: %f pid_valX: %f dutyX: %f \n", m->vel, dis_new, dis_old, m->pid_val, m->dutyns);
-		printf("VelocidadX: %f \n", m->vel);
+		//printf("VelocidadX: %f \n", m->vel);
 
 		if(dis_new >= m->distance)
 		{
 			m->done = TRUE;
 		}
 		err = rt_task_wait_period(NULL);
-/*		if ( err != 0 )
-		{
-			switch(err)
-			{
+		/*		if ( err != 0 )
+				{
+				switch(err)
+				{
 				case -ETIMEDOUT:
-					printf("VETIMEOUT\n");
-					break;
+				printf("VETIMEOUT\n");
+				break;
 				case -EINTR:
-					printf("VEINTR\n");
-					break;
+				printf("VEINTR\n");
+				break;
 				case -EPERM:
-					printf("VEPERM\n");
-					break;
+				printf("VEPERM\n");
+				break;
 				case -EWOULDBLOCK:
-					printf("VEWOULDBLOCK\n");
-					break;
+				printf("VEWOULDBLOCK\n");
+				break;
 				default:
-					break;
-			}
-		}
-		*/
+				break;
+				}
+				}
+				*/
 	}
 }
 
@@ -191,34 +193,34 @@ void controlZ(void *arg)
 
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
 		//printf("VelocidadZ: %f  dis_newZ: %f pid_valZ: %f dutyZ: %f \n", m->vel, dis_new, m->pid_val, m->dutyns);
-		printf("VelocidadZ: %f \n", m->vel);
+		//printf("VelocidadZ: %f \n", m->vel);
 
 		if(dis_new >= m->distance)
 		{
 			m->done = TRUE;
 		}
 		err = rt_task_wait_period(NULL);
-/*		if ( err != 0 )
-		{
-			switch(err)
-			{
+		/*		if ( err != 0 )
+				{
+				switch(err)
+				{
 				case -ETIMEDOUT:
-					printf("VETIMEOUT\n");
-					break;
+				printf("VETIMEOUT\n");
+				break;
 				case -EINTR:
-					printf("VEINTR\n");
-					break;
+				printf("VEINTR\n");
+				break;
 				case -EPERM:
-					printf("VEPERM\n");
-					break;
+				printf("VEPERM\n");
+				break;
 				case -EWOULDBLOCK:
-					printf("VEWOULDBLOCK\n");
-					break;
+				printf("VEWOULDBLOCK\n");
+				break;
 				default:
-					break;
-			}
-		}
-		*/
+				break;
+				}
+				}
+				*/
 	}
 }
 
@@ -260,26 +262,26 @@ void movex(void *arg)
 			puts("Failure of configuring interrupt.");
 		}
 		err = rt_task_wait_period(NULL);
-/*		if ( err != 0 )
-		{
-			switch(err)
-			{
+		/*		if ( err != 0 )
+				{
+				switch(err)
+				{
 				case -ETIMEDOUT:
-					printf("ETIMEOUTX\n");
-					break;
+				printf("ETIMEOUTX\n");
+				break;
 				case -EINTR:
-					printf("EINTR\n");
-					break;
+				printf("EINTR\n");
+				break;
 				case -EPERM:
-					printf("EPERM\n");
-					break;
+				printf("EPERM\n");
+				break;
 				case -EWOULDBLOCK:
-					printf("EWOULDBLOCK\n");
-					break;
+				printf("EWOULDBLOCK\n");
+				break;
 				default:
-					break;
-			}
-		}*/
+				break;
+				}
+				}*/
 	}
 	data = 0;
 	reg.value = data;
@@ -327,26 +329,26 @@ void movez(void *arg)
 			puts("Failure of configuring interrupt.");
 		}
 		err = rt_task_wait_period(NULL);
-/*		if ( err != 0 )
-		{
-			switch(err)
-			{
+		/*		if ( err != 0 )
+				{
+				switch(err)
+				{
 				case -ETIMEDOUT:
-					printf("ETIMEOUTZ\n");
-					break;
+				printf("ETIMEOUTZ\n");
+				break;
 				case -EINTR:
-					printf("EINTR\n");
-					break;
+				printf("EINTR\n");
+				break;
 				case -EPERM:
-					printf("EPERM\n");
-					break;
+				printf("EPERM\n");
+				break;
 				case -EWOULDBLOCK:
-					printf("EWOULDBLOCK\n");
-					break;
+				printf("EWOULDBLOCK\n");
+				break;
 				default:
-					break;
-			}
-		}*/
+				break;
+				}
+				}*/
 	}
 	data = 0;
 	reg.value = data;
@@ -498,27 +500,50 @@ int main(int argc, char* argv[])
 	MotorX.done = FALSE;
 	MotorZ.done = FALSE;
 	/*MotorX.set = 1;
-	MotorZ.set = 1;*/
-	MotorX.distance = 1;
-	MotorZ.distance = 1;
+	  MotorZ.set = 1;*/
+	/*MotorX.distance = 1;
+	  MotorZ.distance = 1;*/
 
 	/* Xenomai */
 	mlockall(MCL_CURRENT|MCL_FUTURE);
-	rt_task_create(&ControlX, "controlx", 0, 90, T_JOINABLE );
-	rt_task_create(&MoveMotorX, "mmotorx", 0, 99, T_JOINABLE );
-	rt_task_create(&ControlZ, "controlz", 0, 90, T_JOINABLE );
-	rt_task_create(&MoveMotorZ, "mmotorz", 0, 99, T_JOINABLE );
-	rt_task_start(&ControlX, &controlX, (void*)MotorX_ptr);
-	rt_task_start(&ControlZ, &controlZ, (void*)MotorZ_ptr);
-	rt_task_start(&MoveMotorX, &movex, (void*)MotorX_ptr);
-	rt_task_start(&MoveMotorZ, &movez, (void*)MotorZ_ptr);
-	rt_task_join(&ControlX);
-	rt_task_join(&ControlZ);
-	rt_task_delete(&ControlX);
-	rt_task_delete(&ControlZ);
-	rt_task_delete(&MoveMotorX);
-	rt_task_delete(&MoveMotorZ);
-
+	if(MotorX.distance != 0)
+	{
+		rt_task_create(&ControlX, "controlx", 0, 90, T_JOINABLE );
+		rt_task_create(&MoveMotorX, "mmotorx", 0, 99, T_JOINABLE );
+	}
+	if(MotorZ.distance != 0)
+	{
+		rt_task_create(&ControlZ, "controlz", 0, 90, T_JOINABLE );
+		rt_task_create(&MoveMotorZ, "mmotorz", 0, 99, T_JOINABLE );
+	}
+	if(MotorX.distance != 0)
+	{
+		rt_task_start(&ControlX, &controlX, (void*)MotorX_ptr);
+		rt_task_start(&MoveMotorX, &movex, (void*)MotorX_ptr);
+	}
+	if(MotorZ.distance != 0)
+	{
+		rt_task_start(&ControlZ, &controlZ, (void*)MotorZ_ptr);
+		rt_task_start(&MoveMotorZ, &movez, (void*)MotorZ_ptr);
+	}
+	if(MotorX.distance != 0)
+	{
+		rt_task_join(&ControlX);
+	}
+	if(MotorZ.distance != 0)
+	{
+		rt_task_join(&ControlZ);
+	}
+	if(MotorX.distance != 0)
+	{
+		rt_task_delete(&ControlX);
+		rt_task_delete(&MoveMotorX);
+	}
+	if(MotorZ.distance != 0)
+	{
+		rt_task_delete(&MoveMotorZ);
+		rt_task_delete(&ControlZ);
+	}
 	/* Ixpio */
 	close(fd);
 	sigaction(MotorXSignal, &act_old, NULL);
