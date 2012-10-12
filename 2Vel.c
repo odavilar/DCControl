@@ -58,11 +58,11 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-/*	if(sp > 0.5){
+	if(sp > 0.5){
 		sp = - 121.87 * (sp*sp*sp*sp*sp) + 862.97 * (sp*sp*sp*sp) - 2301.2 * (sp*sp*sp) + 2852.8 * (sp*sp) - 1385.3 * sp + 213.91;
 	}else{
 		sp = 1.5333 * (sp*sp) + 0.3159 * sp - 0.1051;
-	}*/
+	}
 
 	Kp =0.1839235159018;
 	Kd =0.000000001;
@@ -130,27 +130,27 @@ void controlX(void *arg)
 			m->done = TRUE;
 		}
 		err = rt_task_wait_period(NULL);
-				if ( err != 0 )
-				{
-				switch(err)
-				{
+		if ( err != 0 )
+		{
+			switch(err)
+			{
 				case -ETIMEDOUT:
-				printf("VETIMEOUT\n");
-				break;
+					printf("VETIMEOUT\n");
+					break;
 				case -EINTR:
-				printf("VEINTR\n");
-				break;
+					printf("VEINTR\n");
+					break;
 				case -EPERM:
-				printf("VEPERM\n");
-				break;
+					printf("VEPERM\n");
+					break;
 				case -EWOULDBLOCK:
-				printf("VEWOULDBLOCK\n");
-				break;
+					printf("VEWOULDBLOCK\n");
+					break;
 				default:
-				break;
-				}
-				}
-				
+					break;
+			}
+		}
+
 	}
 }
 
@@ -193,27 +193,27 @@ void controlZ(void *arg)
 			m->done = TRUE;
 		}
 		err = rt_task_wait_period(NULL);
-				if ( err != 0 )
-				{
-				switch(err)
-				{
+		if ( err != 0 )
+		{
+			switch(err)
+			{
 				case -ETIMEDOUT:
-				printf("VETIMEOUT\n");
-				break;
+					printf("VETIMEOUT\n");
+					break;
 				case -EINTR:
-				printf("VEINTR\n");
-				break;
+					printf("VEINTR\n");
+					break;
 				case -EPERM:
-				printf("VEPERM\n");
-				break;
+					printf("VEPERM\n");
+					break;
 				case -EWOULDBLOCK:
-				printf("VEWOULDBLOCK\n");
-				break;
+					printf("VEWOULDBLOCK\n");
+					break;
 				default:
-				break;
-				}
-				}
-				
+					break;
+			}
+		}
+
 	}
 }
 
@@ -255,26 +255,26 @@ void movex(void *arg)
 			puts("Failure of configuring interrupt.");
 		}
 		err = rt_task_wait_period(NULL);
-				if ( err != 0 )
-				{
-				switch(err)
-				{
+		if ( err != 0 )
+		{
+			switch(err)
+			{
 				case -ETIMEDOUT:
-				printf("ETIMEOUTX\n");
-				break;
+					printf("ETIMEOUTX\n");
+					break;
 				case -EINTR:
-				printf("EINTR\n");
-				break;
+					printf("EINTR\n");
+					break;
 				case -EPERM:
-				printf("EPERM\n");
-				break;
+					printf("EPERM\n");
+					break;
 				case -EWOULDBLOCK:
-				printf("EWOULDBLOCK\n");
-				break;
+					printf("EWOULDBLOCK\n");
+					break;
 				default:
-				break;
-				}
-				}
+					break;
+			}
+		}
 	}
 	data = 0;
 	reg.value = data;
@@ -379,7 +379,7 @@ int main(int argc, char* argv[])
 	MotorX.distance = atof(argv[2]);
 	MotorZ.set = atof(argv[3]);
 	MotorZ.distance = atof(argv[4]);
-	printf("%f %f %f %f\n", MotorX.set, MotorX.distance, MotorX.set, MotorX.distance);
+	printf("%f %f %f %f\n", MotorX.set, MotorX.distance, MotorZ.set, MotorZ.distance);
 	RT_TASK MoveMotorX;
 	RT_TASK MoveMotorZ;
 	RT_TASK ControlX;
