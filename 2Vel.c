@@ -58,11 +58,11 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-	if(sp > 0.5){
+/*	if(sp > 0.5){
 		sp = - 121.87 * (sp*sp*sp*sp*sp) + 862.97 * (sp*sp*sp*sp) - 2301.2 * (sp*sp*sp) + 2852.8 * (sp*sp) - 1385.3 * sp + 213.91;
 	}else{
 		sp = 1.5333 * (sp*sp) + 0.3159 * sp - 0.1051;
-	}
+	}*/
 
 	Kp =0.1839235159018;
 	Kd =0.000000001;
@@ -130,7 +130,7 @@ void controlX(void *arg)
 			m->done = TRUE;
 		}
 		err = rt_task_wait_period(NULL);
-		/*		if ( err != 0 )
+				if ( err != 0 )
 				{
 				switch(err)
 				{
@@ -150,7 +150,7 @@ void controlX(void *arg)
 				break;
 				}
 				}
-				*/
+				
 	}
 }
 
@@ -193,7 +193,7 @@ void controlZ(void *arg)
 			m->done = TRUE;
 		}
 		err = rt_task_wait_period(NULL);
-		/*		if ( err != 0 )
+				if ( err != 0 )
 				{
 				switch(err)
 				{
@@ -213,7 +213,7 @@ void controlZ(void *arg)
 				break;
 				}
 				}
-				*/
+				
 	}
 }
 
@@ -255,7 +255,7 @@ void movex(void *arg)
 			puts("Failure of configuring interrupt.");
 		}
 		err = rt_task_wait_period(NULL);
-		/*		if ( err != 0 )
+				if ( err != 0 )
 				{
 				switch(err)
 				{
@@ -274,7 +274,7 @@ void movex(void *arg)
 				default:
 				break;
 				}
-				}*/
+				}
 	}
 	data = 0;
 	reg.value = data;
@@ -322,26 +322,26 @@ void movez(void *arg)
 			puts("Failure of configuring interrupt.");
 		}
 		err = rt_task_wait_period(NULL);
-		/*		if ( err != 0 )
-				{
-				switch(err)
-				{
+		if ( err != 0 )
+		{
+			switch(err)
+			{
 				case -ETIMEDOUT:
-				printf("ETIMEOUTZ\n");
-				break;
+					printf("ETIMEOUTZ\n");
+					break;
 				case -EINTR:
-				printf("EINTR\n");
-				break;
+					printf("EINTR\n");
+					break;
 				case -EPERM:
-				printf("EPERM\n");
-				break;
+					printf("EPERM\n");
+					break;
 				case -EWOULDBLOCK:
-				printf("EWOULDBLOCK\n");
-				break;
+					printf("EWOULDBLOCK\n");
+					break;
 				default:
-				break;
-				}
-				}*/
+					break;
+			}
+		}
 	}
 	data = 0;
 	reg.value = data;
