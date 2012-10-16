@@ -32,7 +32,7 @@ typedef struct motor{
 }Motor;
 
 int duty_to_ns(float duty, float periodo);
-float pid(float sp, float pv);
+float pid(float sp, float pv, int axis);
 
 void sig_handler(int sig)
 {
@@ -50,7 +50,7 @@ int duty_to_ns(float duty, float periodo)
 	return duty * periodo / 100.0;
 }
 
-float pid(float sp, float pv)
+float pid(float sp, float pv, int axis)
 {
 	static float err_old;
 	static float P_err, I_err, D_err;
@@ -58,11 +58,16 @@ float pid(float sp, float pv)
 	float Kp, Kd, Ki;
 	float pid;
 
-	if(sp > 0.5){
+	if(axis){
+		sp = (238.48 * sp) - 70.578;
+	}else{
+		sp = (240 * sp) - 58.4;
+	}
+/*	if(sp > 0.5){
 		sp = - 121.87 * (sp*sp*sp*sp*sp) + 862.97 * (sp*sp*sp*sp) - 2301.2 * (sp*sp*sp) + 2852.8 * (sp*sp) - 1385.3 * sp + 213.91;
 	}else{
 		sp = 1.5333 * (sp*sp) + 0.3159 * sp - 0.1051;
-	}
+	}*/
 
 	Kp =0.1839235159018;
 	Kd =0.000000001;
@@ -115,7 +120,7 @@ void controlX(void *arg)
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
-			m->pid_val = pid(m->set,m->vel);
+			m->pid_val = pid(m->set,m->vel,0);
 			cont1++;
 			cont0 = 0;
 		}
@@ -178,7 +183,7 @@ void controlZ(void *arg)
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
-			m->pid_val = pid(m->set,m->vel);
+			m->pid_val = pid(m->set,m->vel,1);
 			cont1++;
 			cont0 = 0;
 		}
