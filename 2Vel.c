@@ -59,7 +59,7 @@ float pid(float sp, float pv, int axis)
 	float pid;
 
 	if(axis){
-		sp = (238.48 * sp) - 70.578;
+		sp = (239 * sp) - 65;
 	}else{
 		sp = (240 * sp) - 58.4;
 	}
@@ -115,8 +115,8 @@ void controlX(void *arg)
 			datosvel[i]=datosvel[i-1];
 		}
 		datosvel[0] = counterX;
-		dis_new = datosvel[0] * 0.000139509 * 2;
-		dis_old = datosvel[9] * 0.000139509 * 2;
+		dis_new = datosvel[0] * 0.000139509 * 2 * 2;
+		dis_old = datosvel[9] * 0.000139509 * 2 * 2;
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
@@ -129,6 +129,7 @@ void controlX(void *arg)
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
 		//printf("VelocidadX: %f  dis_newX: %f pid_valX: %f dutyX: %f \n", m->vel, dis_new, dis_old, m->pid_val, m->dutyns);
 		//printf("VelocidadX: %f \n", m->vel);
+	//	printf("dis_newX: %f\n", dis_new);
 
 		if(dis_new >= m->distance)
 		{
@@ -178,8 +179,8 @@ void controlZ(void *arg)
 			datosvel[i] = datosvel[i - 1];
 		}
 		datosvel[0] = counterZ;
-		dis_new = datosvel[0] * 0.000139509 * 2;
-		dis_old = datosvel[9] * 0.000139509 * 2;
+		dis_new = datosvel[0] * 0.000139509 * 2 * 2;
+		dis_old = datosvel[9] * 0.000139509 * 2 * 2;
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
@@ -192,6 +193,7 @@ void controlZ(void *arg)
 		m->dutyns = duty_to_ns(m->pid_val,m->periodo);
 		//printf("VelocidadZ: %f  dis_newZ: %f pid_valZ: %f dutyZ: %f \n", m->vel, dis_new, m->pid_val, m->dutyns);
 		//printf("VelocidadZ: %f \n", m->vel);
+		//printf("dis_newZ: %f\n", dis_new);
 
 		if(dis_new >= m->distance)
 		{
@@ -506,13 +508,13 @@ int main(int argc, char* argv[])
 	mlockall(MCL_CURRENT|MCL_FUTURE);
 	if(MotorX.distance != 0)
 	{
-		rt_task_create(&ControlX, "controlx", 0, 90, T_JOINABLE );
-		rt_task_create(&MoveMotorX, "mmotorx", 0, 99, T_JOINABLE );
+		rt_task_create(&ControlX, "controlx", 0, 90, T_JOINABLE | T_CPU(0));
+		rt_task_create(&MoveMotorX, "mmotorx", 0, 99, T_JOINABLE  | T_CPU(3));
 	}
 	if(MotorZ.distance != 0)
 	{
-		rt_task_create(&ControlZ, "controlz", 0, 90, T_JOINABLE );
-		rt_task_create(&MoveMotorZ, "mmotorz", 0, 99, T_JOINABLE );
+		rt_task_create(&ControlZ, "controlz", 0, 90, T_JOINABLE  | T_CPU(2));
+		rt_task_create(&MoveMotorZ, "mmotorz", 0, 99, T_JOINABLE  | T_CPU(1));
 	}
 	if(MotorX.distance != 0)
 	{
