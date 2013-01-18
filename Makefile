@@ -1,4 +1,4 @@
-objectscon := 2Vel.o VelControl.o
+objectscon := 2Vel.o VelControl.o Pieza.o
 objectsmov := move.o
 
 objects := $(objectscon:.o=) $(objectsmov:.o=)
@@ -24,6 +24,9 @@ control: $(objectscon)
 
 VelControl.o:
 	$(CC) VelControl.c ${DC_CPPFLAGS} ${DC_LDFLAGS} ${DEBUGFLAGS} -o VelControl
+
+Pieza.o:
+	$(CC) Pieza.c ${DC_CPPFLAGS} ${DC_LDFLAGS} ${DEBUGFLAGS} -o Pieza
 
 move.o:
 	$(CC) move.c ${DEBUGFLAGS} ${IXPIO} ${NCURSES} -o move

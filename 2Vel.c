@@ -115,8 +115,8 @@ void controlX(void *arg)
 			datosvel[i]=datosvel[i-1];
 		}
 		datosvel[0] = counterX;
-		dis_new = datosvel[0] * 0.000139509 * 2 * 2;
-		dis_old = datosvel[9] * 0.000139509 * 2 * 2;
+		dis_new = datosvel[0] * 0.000139509 * 2 * 2 / 2.0;
+		dis_old = datosvel[9] * 0.000139509 * 2 * 2 / 2.0;
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
@@ -179,8 +179,8 @@ void controlZ(void *arg)
 			datosvel[i] = datosvel[i - 1];
 		}
 		datosvel[0] = counterZ;
-		dis_new = datosvel[0] * 0.000139509 * 2 * 2;
-		dis_old = datosvel[9] * 0.000139509 * 2 * 2;
+		dis_new = datosvel[0] * 0.000139509 * 2 * 2 / 2.0;
+		dis_old = datosvel[9] * 0.000139509 * 2 * 2 / 2.0;
 		m->vel = (dis_new - dis_old) * 1000.0 / 1.0;
 		if(cont0 > 9 )
 		{
@@ -472,6 +472,7 @@ int main(int argc, char* argv[])
 	sig.pid = getpid();
 	sig.is = 0x02;   /* Signal for the P5C0 channel */
 	sig.edge = 0x02;  /* High level trigger */
+	sig.bedge = 0x02;  /* High level trigger */
 	if (ioctl(fd, IXPIO_SET_SIG, &sig)) {
 		close(fd);
 		sigaction(MotorXSignal, &act_old, NULL);
@@ -483,6 +484,7 @@ int main(int argc, char* argv[])
 	sig.pid = getpid();
 	sig.is = 0x04;   /* Signal for the P8C0 channel */
 	sig.edge = 0x04;  /* High level trigger */
+	sig.bedge = 0x04;  /* High level trigger */
 	if (ioctl(fd, IXPIO_SIG_ADD, &sig)) {
 		close(fd);
 		sigaction(MotorXSignal, &act_old, NULL);
