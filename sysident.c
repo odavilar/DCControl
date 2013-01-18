@@ -1,3 +1,8 @@
+/*
+ * System Identification
+ * Captura en un archivo los datos adquiridos por un motor.
+ * Utilizado para la identificación de la planta.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
