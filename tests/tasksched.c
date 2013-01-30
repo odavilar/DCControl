@@ -19,18 +19,42 @@
 
 void task1(void *arg)
 {
+	rt_task_set_periodic(NULL, TM_NOW, 1000000000);
+	while(1)
+	{
+		rt_printf("Soy tarea 1 \n");
+		rt_task_wait_period(NULL);
+	}
 }
 
 void task2(void *arg)
 {
+	rt_task_set_periodic(NULL, TM_NOW, 1000000000);
+	while(1)
+	{
+		rt_printf("Soy tarea 2 \n");
+		rt_task_wait_period(NULL);
+	}
 }
 
 void task3(void *arg)
 {
+	rt_task_set_periodic(NULL, TM_NOW, 1000000000);
+	while(1)
+	{
+		rt_printf("Soy tarea 3 \n");
+		rt_task_wait_period(NULL);
+	}
 }
 
 void task4(void *arg)
 {
+	rt_task_set_periodic(NULL, TM_NOW, 1000000000);
+	while(1)
+	{
+		rt_printf("Soy tarea 4 \n");
+		rt_task_wait_period(NULL);
+	}
 }
 
 void catch_signal(int sig)
